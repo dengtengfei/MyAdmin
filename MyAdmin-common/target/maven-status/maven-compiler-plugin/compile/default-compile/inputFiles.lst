@@ -1,0 +1,13 @@
+C:\project\MyAdmin\MyAdmin-common\src\main\java\com\dtf\base\BaseEntity.java
+C:\project\MyAdmin\MyAdmin-common\src\main\java\com\dtf\utils\CallBack.java
+C:\project\MyAdmin\MyAdmin-common\src\main\java\com\dtf\utils\SpringContextHolder.java
+C:\project\MyAdmin\MyAdmin-common\src\main\java\com\dtf\exception\BadRequestException.java
+C:\project\MyAdmin\MyAdmin-common\src\main\java\com\dtf\utils\SecurityUtils.java
+C:\project\MyAdmin\MyAdmin-common\src\main\java\com\dtf\utils\StringUtils.java
+C:\project\MyAdmin\MyAdmin-common\src\main\java\com\dtf\base\BaseDTO.java
+C:\project\MyAdmin\MyAdmin-common\src\main\java\com\dtf\utils\enums\DataScopeEnum.java
+C:\project\MyAdmin\MyAdmin-common\src\main\java\com\dtf\utils\ToStringUtils.java
+C:\project\MyAdmin\MyAdmin-common\src\main\java\com\dtf\base\BaseMapper.java
+C:\project\MyAdmin\MyAdmin-common\src\main\java\com\dtf\utils\QueryHelp.java
+C:\project\MyAdmin\MyAdmin-common\src\main\java\com\dtf\annotation\DataPermission.java
+C:\project\MyAdmin\MyAdmin-common\src\main\java\com\dtf\annotation\Query.java
