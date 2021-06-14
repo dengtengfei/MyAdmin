@@ -6,6 +6,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 
+import java.util.List;
+import java.util.Set;
+
 /**
  * 0 *
  * 1 * @Author:  deng.tengfei
@@ -13,6 +16,21 @@ import org.springframework.data.jpa.repository.Modifying;
  * 3 * @Date:  2021/6/12 23:01
  */
 public interface DeptRepository extends JpaRepository<Dept, Long>, JpaSpecificationExecutor<Dept> {
+    /**
+     * 根据PID查询
+     * @param pid
+     * @return
+     */
+    List<Dept> findByPid(Long pid);
+
+    /**
+     * 根据角色id查询部门
+      * @param roleId
+     * @return
+     */
+    @Query(value = "SELECT d.* FROM sys_dept d, sys_roles_depts r WHERE d.dept_id = r.dept_it AND d.role_id = ?1", nativeQuery = true)
+    Set<Dept> findByRoleId(Long roleId);
+
     /**
      * 计算子节点个数
      * @param pid 节点id

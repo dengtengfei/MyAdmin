@@ -3,6 +3,8 @@ package com.dtf.modules.system.service.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * 0 *
  * 1 * @Author:  deng.tengfei
@@ -11,7 +13,7 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
-public class JobSmallDto {
+public class JobSmallDto implements Serializable {
     private Long id;
 
     private String name;

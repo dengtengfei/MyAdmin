@@ -15,6 +15,13 @@ import java.util.List;
  */
 public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificationExecutor<User> {
     /**
+     * 根据用户名查询
+     * @param username 用户名
+     * @return /
+     */
+    User findByUsername(String username);
+
+    /**
      * 根据角色中的部门查询
      * @param deptId
      * @return

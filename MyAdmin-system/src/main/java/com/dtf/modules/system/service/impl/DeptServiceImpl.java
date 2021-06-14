@@ -20,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * 0 *
@@ -34,7 +36,7 @@ public class DeptServiceImpl implements DeptService {
     private final DeptRepository deptRepository;
     private final DeptMapper deptMapper;
     private final UserRepository userRepository;
-//    private final RedisUtils1 redisUtils;
+    private final RedisUtils redisUtils;
 
     @Override
     public List<DeptDto> queryAll(DeptQueryCriteria criteria, Boolean isQuery) throws IllegalAccessException {
@@ -109,7 +111,32 @@ public class DeptServiceImpl implements DeptService {
     private void delCaches(Long id) {
         List<User> users = userRepository.findByRoleDeptId(id);
         // 删除数据权限
-//        redisUtils.delByKeys(CacheKey.DATA_USER, users.stream().map(User::getId).collect(Collectors.toSet()));
-//        redisUtils.del(CacheKey.DEPT_ID + id);
+        redisUtils.delByKeys(CacheKey.DATA_USER, users.stream().map(User::getId).collect(Collectors.toSet()));
+        redisUtils.del(CacheKey.DEPT_ID + id);
+    }
+
+    @Override
+    public Set<Dept> findByRoleId(Long id) {
+        return deptRepository.findByRoleId(id);
+    }
+
+    @Override
+    public List<Dept> findByPid(long pid) {
+        return deptRepository.findByPid(pid);
+    }
+
+    @Override
+    public List<Long> getDeptChildren(List<Dept> deptList) {
+        List<Long> list = new ArrayList<>();
+        deptList.forEach(dept -> {
+            if (dept != null && dept.getEnabled()) {
+                List<Dept> depts = deptRepository.findByPid(dept.getPid());
+                if (depts.size() != 0) {
+                    list.addAll(getDeptChildren(depts));
+                }
+                list.add(dept.getId());
+            }
+        });
+        return list;
     }
 }
