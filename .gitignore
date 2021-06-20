@@ -1,1 +1,12 @@
 .idea
+MyAdmin.iml
+MyAdmin-common/MyAdmin-common.iml
+MyAdmin-generator/MyAdmin-generator.iml
+MyAdmin-logging/MyAdmin-logging.iml
+MyAdmin-system/MyAdmin-system.iml
+MyAdmin-tools/MyAdmin-tools.iml
+MyAdmin-common/target
+MyAdmin-generator/target
+MyAdmin-logging/target
+MyAdmin-system/target
+MyAdmin-tools/target
