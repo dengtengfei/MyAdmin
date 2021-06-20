@@ -3,17 +3,15 @@ package com.dtf.modules.security.service;
 import com.dtf.modules.security.config.bean.SecurityProperties;
 import com.dtf.modules.security.service.dto.JwtUserDto;
 import com.dtf.modules.security.service.dto.OnlineUserDto;
-import com.dtf.utils.EncryptUtils;
-import com.dtf.utils.RedisUtils;
-import com.dtf.utils.StringUtils;
+import com.dtf.utils.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * 0 *
@@ -46,6 +44,12 @@ public class OnlineUserService {
         redisUtils.set(properties.getOnlineKey() + token, onlineUserDto, properties.getTokenValidityInSeconds() / 1000);
     }
 
+    public Map<String, Object> getAll(String filter, Pageable pageable) {
+        List<OnlineUserDto> onlineUserDtoList = getAll(filter);
+        return PageUtil.toPage(PageUtil.toPage(pageable.getPageNumber(), pageable.getPageSize(), onlineUserDtoList),
+                onlineUserDtoList.size());
+    }
+
     public List<OnlineUserDto> getAll(String filter) {
         List<String> keys = redisUtils.scan(properties.getOnlineKey() + "*");
         Collections.reverse(keys);
@@ -76,6 +80,21 @@ public class OnlineUserService {
     public void logout(String token) {
         String key = properties.getOnlineKey() + token;
         redisUtils.del(key);
+    }
+
+    public void download(List<OnlineUserDto> all, HttpServletResponse response) throws IOException {
+        List<Map<String, Object>> list = new ArrayList<>();
+        for (OnlineUserDto user : all) {
+            Map<String, Object> map = new LinkedHashMap<>(6);
+            map.put("用户名", user.getUsername());
+            map.put("部门", user.getDept());
+            map.put("登录IP", user.getIp());
+            map.put("登录地点", user.getAddress());
+            map.put("浏览器", user.getBrowser());
+            map.put("登录日期", user.getLoginTime());
+            list.add(map);
+        }
+        FileUtil.downloadExcel(list, response);
     }
 
     public OnlineUserDto getOne(String key) {

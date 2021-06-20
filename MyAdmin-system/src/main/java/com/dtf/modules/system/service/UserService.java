@@ -19,13 +19,13 @@ import java.util.Set;
  * 3 * @Date:  2021/6/14 21:03
  */
 public interface UserService {
-//    /**
-//     * 根据id查询
-//     *
-//     * @param id
-//     * @return
-//     */
-//    UserDto findById(long id);
+    /**
+     * 根据id查询
+     *
+     * @param id
+     * @return
+     */
+    UserDto findById(long id);
 //
 //    void create(User user);
 //

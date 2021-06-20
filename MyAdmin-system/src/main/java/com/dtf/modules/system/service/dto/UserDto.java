@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Set;
 
 /**
@@ -49,5 +50,5 @@ public class UserDto extends BaseDTO implements Serializable {
     @JSONField(serialize = false)
     private Boolean isAdmin;
 
-    private String pwdResetTime;
+    private Date pwdResetTime;
 }
