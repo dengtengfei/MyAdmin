@@ -1,7 +1,7 @@
 package com.dtf.modules.system.service.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
@@ -12,7 +12,7 @@ import java.io.Serializable;
  * 3 * @Date:  2021/6/13 22:12
  */
 @Data
-@AllArgsConstructor
+@NoArgsConstructor
 public class JobSmallDto implements Serializable {
     private Long id;
 
