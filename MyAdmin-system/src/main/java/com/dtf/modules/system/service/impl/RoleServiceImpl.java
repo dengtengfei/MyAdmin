@@ -32,9 +32,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @CacheConfig(cacheNames = "role")
 public class RoleServiceImpl implements RoleService {
-    private RoleRepository roleRepository;
-    private RoleMapper roleMapper;
-    private RoleSmallMapper roleSmallMapper;
+    private final RoleRepository roleRepository;
+    private final RoleMapper roleMapper;
+    private final RoleSmallMapper roleSmallMapper;
 
     @Override
     public List<RoleSmallDto> findByUsersId(Long id) {

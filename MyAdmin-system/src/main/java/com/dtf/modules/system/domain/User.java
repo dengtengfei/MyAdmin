@@ -34,14 +34,14 @@ public class User extends BaseEntity implements Serializable {
 
     @ManyToMany
     @ApiModelProperty(value = "用户角色")
-    @JoinTable(name = "sys_user_roles",
+    @JoinTable(name = "sys_users_roles",
             joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "user_id")},
             inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "role_id")})
     private Set<Role> roles;
 
     @ManyToMany
     @ApiModelProperty(value = "用户岗位")
-    @JoinTable(name = "sys_user_jobs",
+    @JoinTable(name = "sys_users_jobs",
             joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "user_id")},
             inverseJoinColumns = {@JoinColumn(name = "job_id", referencedColumnName = "job_id")})
     private Set<Job> jobs;
