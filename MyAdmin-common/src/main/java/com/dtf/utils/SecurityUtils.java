@@ -42,6 +42,11 @@ public class SecurityUtils {
         return JSONUtil.toList(array, Long.class);
     }
 
+    public static long getCurrentUserId() {
+        UserDetails userDetails = getCurrentUser();
+        return new JSONObject(userDetails).getJSONObject("user").getLong("id");
+    }
+
     /**
      * 获取数据权限级别
      * @return
