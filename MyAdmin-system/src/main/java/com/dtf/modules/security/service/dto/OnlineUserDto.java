@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -15,7 +16,11 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class OnlineUserDto {
+public class OnlineUserDto implements Serializable {
+    // TODO Serializable ?
+    /**
+     *
+     */
     private String username;
 
     private String nickName;

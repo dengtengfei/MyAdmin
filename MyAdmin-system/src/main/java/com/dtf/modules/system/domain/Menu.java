@@ -42,7 +42,7 @@ public class Menu extends BaseEntity implements Serializable {
     private Integer menuSort = 999;
 
     @ApiModelProperty(value = "组件路径")
-    private String componet;
+    private String component;
 
     @ApiModelProperty(value = "路由地址")
     private String path;

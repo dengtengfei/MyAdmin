@@ -40,7 +40,7 @@ public class MenuServiceImpl implements MenuService {
     public List<MenuDto> findByUser(Long userId) {
         List<RoleSmallDto> roles = roleService.findByUsersId(userId);
         Set<Long> roleIds = roles.stream().map(RoleSmallDto::getId).collect(Collectors.toSet());
-        List<Menu> menus = menuRepository.findByRoleIdsAndTypeNot(roleIds, 2);
+        LinkedHashSet<Menu> menus = menuRepository.findByRoleIdsAndTypeNot(roleIds, 2);
         return menus.stream().map(menuMapper::toDTO).collect(Collectors.toList());
     }
 

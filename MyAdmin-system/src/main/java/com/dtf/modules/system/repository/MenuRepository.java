@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 
-import java.util.List;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
@@ -21,6 +21,6 @@ public interface MenuRepository extends JpaRepository<Menu, Long>, JpaSpecificat
      * @param type \
      * @return \
      */
-    @Query(value = "SELECT m.* FROM sys_menu m, sys_roles_menus r WHERE m.menu_id = r.menu_id AND r.role_id IN ?1 AND type != ?2 ORDER BY m.menu_sort asc", nativeQuery = true)
-    List<Menu> findByRoleIdsAndTypeNot(Set<Long> roleIds, int type);
+    @Query(value = "SELECT m.* FROM sys_menu m, sys_roles_menus r WHERE m.menu_id = r.menu_id AND r.role_id IN ?1 AND m.type!=?2 ORDER BY m.menu_sort asc", nativeQuery = true)
+    LinkedHashSet<Menu> findByRoleIdsAndTypeNot(Set<Long> roleIds, int type);
 }
