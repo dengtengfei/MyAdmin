@@ -9,4 +9,5 @@ package com.dtf.utils;
 public interface CacheKey {
     String DATA_USER = "data::user";
     String DEPT_ID = "dept::id";
+    String DICT_NAME = "dict::name";
 }
