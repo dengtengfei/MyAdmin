@@ -67,8 +67,8 @@ public class MenuDto extends BaseDTO implements Serializable {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        MenuDto roleDto = (MenuDto) o;
-        return Objects.equals(id, roleDto.getId());
+        MenuDto menuDto = (MenuDto) o;
+        return Objects.equals(id, menuDto.getId());
     }
 
     @Override

@@ -77,7 +77,7 @@ public class MenuServiceImpl implements MenuService {
                 MenuVo menuVo = new MenuVo();
                 menuVo.setName(StringUtils.isNotBlank(menuDto.getComponentName()) ? menuDto.getComponentName() : menuDto.getTitle());
                 // 一级目录需要加斜杠
-                menuVo.setPath(menuDto.getPath() == null ? "/" + menuDto.getPath() : menuDto.getPath());
+                menuVo.setPath(menuDto.getPid() == null ? "/" + menuDto.getPath() : menuDto.getPath());
                 menuVo.setHidden(menuDto.getHidden());
                 // 如果不是外链
                 if (!menuDto.getIFrame()) {

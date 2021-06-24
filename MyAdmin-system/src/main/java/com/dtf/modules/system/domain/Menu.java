@@ -25,7 +25,7 @@ import java.util.Set;
 public class Menu extends BaseEntity implements Serializable {
     @Id
     @Column(name = "menu_id")
-    @NotNull(groups = Update.class)
+    @NotNull(groups = {Update.class})
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ApiModelProperty(value = "ID", hidden = true)
     private Long id;
@@ -37,6 +37,10 @@ public class Menu extends BaseEntity implements Serializable {
 
     @ApiModelProperty(value = "菜单标题")
     private String title;
+
+    @Column(name = "name")
+    @ApiModelProperty(value = "菜单组件名称")
+    private String componentName;
 
     @ApiModelProperty(value = "排序")
     private Integer menuSort = 999;
