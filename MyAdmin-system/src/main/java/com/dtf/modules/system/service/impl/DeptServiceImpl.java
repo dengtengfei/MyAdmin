@@ -1,7 +1,10 @@
 package com.dtf.modules.system.service.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
+import com.dtf.exception.BadRequestException;
 import com.dtf.modules.system.domain.User;
+import com.dtf.modules.system.repository.RoleRepository;
 import com.dtf.modules.system.service.dto.DeptDto;
 import com.dtf.modules.system.service.mapstruct.DeptMapper;
 import com.dtf.modules.system.domain.Dept;
@@ -37,6 +40,55 @@ public class DeptServiceImpl implements DeptService {
     private final DeptMapper deptMapper;
     private final UserRepository userRepository;
     private final RedisUtils redisUtils;
+    private final RoleRepository roleRepository;
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void create(Dept dept) {
+        deptRepository.save(dept);
+        // 计算子节点数目
+        dept.setSubCount(0);
+        // 清理缓存
+        updateSubCnt(dept.getPid());
+        // 清理自定义角色权限的dataScope
+        delCaches(dept.getPid());
+    }
+
+    @Override
+    public void delete(Set<DeptDto> deptDtoSet) {
+        for (DeptDto deptDto : deptDtoSet) {
+            delCaches(deptDto.getId());
+            deptRepository.deleteById(deptDto.getId());
+            updateSubCnt(deptDto.getPid());
+        }
+    }
+
+    @Override
+    public Set<DeptDto> getDeleteDeptLst(List<Dept> deptList, Set<DeptDto> deptDtoSet) {
+        for (Dept dept : deptList) {
+            deptDtoSet.add(deptMapper.toDto(dept));
+            List<Dept> deptChildren = deptRepository.findByPid(dept.getId());
+            if (CollectionUtil.isNotEmpty(deptChildren)) {
+                getDeleteDeptLst(deptChildren, deptDtoSet);
+            }
+        }
+        return deptDtoSet;
+    }
+
+    @Override
+    public void update(Dept dept) {
+        Dept oldDept = deptRepository.findById(dept.getId()).orElseGet(Dept::new);
+        Long oldPid = oldDept.getPid();
+        Long newPid = dept.getPid();
+        if (dept.getId() != null && dept.getId().equals(dept.getPid())) {
+            throw new BadRequestException("上级不能为自己");
+        }
+        ValidationUtil.isNull(dept.getId(), "Dept", "id", oldDept.getId());
+        // TODO 没有 set id
+        updateSubCnt(oldPid);
+        updateSubCnt(newPid);
+        delCaches(dept.getId());
+    }
 
     @Override
     public List<DeptDto> queryAll(DeptQueryCriteria criteria, Boolean isQuery) throws IllegalAccessException {
@@ -64,7 +116,7 @@ public class DeptServiceImpl implements DeptService {
                 }
             }
         }
-        List<DeptDto> list = deptMapper.toDto(deptRepository.findAll((root, criteriaQuery, criteriaBuilder) -> QueryHelp.getPredicate(root, criteriaQuery, criteriaBuilder), sort));
+        List<DeptDto> list = deptMapper.toDto(deptRepository.findAll((root, criteriaQuery, criteriaBuilder) -> QueryHelp.getPredicate(root, criteria, criteriaBuilder), sort));
         // TODO 测试去掉if结果
         if (StringUtils.isBlank(dataScopeType)) {
             return deduplication(list);
@@ -73,21 +125,16 @@ public class DeptServiceImpl implements DeptService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void create(Dept dept) {
-        deptRepository.save(dept);
-        // 计算子节点数目
-        dept.setSubCount(0);
-        // 清理缓存
-        updateSubCnt(dept.getPid());
-        // 清理自定义角色权限的dataScope
-        delCaches(dept.getPid());
+    public DeptDto findById(Long id) {
+        Dept dept = deptRepository.findById(id).orElseGet(Dept::new);
+        ValidationUtil.isNull(dept.getId(), "Dept", "id", id);
+        return deptMapper.toDto(dept);
     }
 
-    private void updateSubCnt(Long deptid) {
-        if (deptid != null) {
-            int count = deptRepository.countByPid(deptid);
-            deptRepository.updateSubCntById(count, deptid);
+    private void updateSubCnt(Long deptId) {
+        if (deptId != null) {
+            int count = deptRepository.countByPid(deptId);
+            deptRepository.updateSubCntById(count, deptId);
         }
     }
 
@@ -130,13 +177,24 @@ public class DeptServiceImpl implements DeptService {
         List<Long> list = new ArrayList<>();
         deptList.forEach(dept -> {
             if (dept != null && dept.getEnabled()) {
-                List<Dept> depts = deptRepository.findByPid(dept.getPid());
-                if (depts.size() != 0) {
-                    list.addAll(getDeptChildren(depts));
+                List<Dept> deptChildren = deptRepository.findByPid(dept.getPid());
+                if (deptChildren.size() != 0) {
+                    list.addAll(getDeptChildren(deptChildren));
                 }
                 list.add(dept.getId());
             }
         });
         return list;
+    }
+
+    @Override
+    public void verification(Set<DeptDto> deptDtoSet) {
+        Set<Long> deptIds = deptDtoSet.stream().map(DeptDto::getId).collect(Collectors.toSet());
+        if (userRepository.countByDeptIdIn(deptIds) > 0) {
+            throw new BadRequestException("所选部门存在用户关联，请解除后再试！");
+        }
+        if (roleRepository.countByDeptIds(deptIds) > 0) {
+            throw new BadRequestException("所选部门存在角色关联，请解除后再试！");
+        }
     }
 }

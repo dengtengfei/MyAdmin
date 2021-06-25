@@ -21,7 +21,7 @@ public interface BaseMapper<D, E> {
      * @param entity /
      * @return /
      */
-    D toDTO(E entity);
+    D toDto(E entity);
 
     /**
      * DTO集合转Entity集合

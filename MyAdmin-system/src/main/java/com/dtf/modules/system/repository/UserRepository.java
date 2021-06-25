@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * 0 *
@@ -29,4 +30,13 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
     @Query(value = "SELECT u.* FROM sys_user u, sys_users_roles r, sys_roles_depts d WHERE " +
     "u.user_id = r.user_id AND r.role_id = d.role_id AND d.dept_id = ?1 group by u.user_id", nativeQuery = true)
     List<User> findByRoleDeptId(Long deptId);
+
+    // TODO 待验证
+
+    /**
+     * 根据部门id查询用户数量
+     * @param deptIds
+     * @return
+     */
+    int countByDeptIdIn(Set<Long> deptIds);
 }

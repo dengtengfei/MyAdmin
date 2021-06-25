@@ -56,4 +56,9 @@ public class DeptDto extends BaseDTO implements Serializable {
         DeptDto deptDto = (DeptDto) o;
         return Objects.equals(id, deptDto.id) && Objects.equals(name, deptDto.name);
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
+    }
 }

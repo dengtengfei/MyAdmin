@@ -41,7 +41,7 @@ public class MenuServiceImpl implements MenuService {
         List<RoleSmallDto> roles = roleService.findByUsersId(userId);
         Set<Long> roleIds = roles.stream().map(RoleSmallDto::getId).collect(Collectors.toSet());
         LinkedHashSet<Menu> menus = menuRepository.findByRoleIdsAndTypeNot(roleIds, 2);
-        return menus.stream().map(menuMapper::toDTO).collect(Collectors.toList());
+        return menus.stream().map(menuMapper::toDto).collect(Collectors.toList());
     }
 
     @Override

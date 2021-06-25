@@ -1,9 +1,14 @@
 package com.dtf.modules.system.rest;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.dtf.annotation.Log;
+import com.dtf.base.BaseEntity;
 import com.dtf.exception.BadRequestException;
 import com.dtf.modules.system.domain.Dept;
 import com.dtf.modules.system.service.DeptService;
+import com.dtf.modules.system.service.dto.DeptDto;
+import com.dtf.modules.system.service.dto.DeptQueryCriteria;
+import com.dtf.utils.PageUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +19,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * 0 *
@@ -27,21 +35,57 @@ import javax.servlet.http.HttpServletResponse;
 @RequestMapping("/api/dept")
 public class DeptController {
     private final DeptService deptService;
-    /*
-    部门
+
+    /**
+     * 部门
      */
     private static final String ENTITY_NAME = "dept";
 
     @Log("新增部门")
     @ApiOperation("新增部门")
     @PostMapping
-    @PreAuthorize("el.check('dept:add')")
+    @PreAuthorize("@dtf.check('dept:add')")
     public ResponseEntity<Object> create(@Validated @RequestBody Dept dept) {
         if (dept.getId() != null) {
             throw new BadRequestException("A new " + ENTITY_NAME + "cannot created, because it has an id.");
         }
         deptService.create(dept);
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @Log("删除部门")
+    @ApiOperation("删除部门")
+    @DeleteMapping
+    @PreAuthorize("@dtf.check('dept:del')")
+    public ResponseEntity<Object> delete(@RequestBody Set<Long> ids) {
+        Set<DeptDto> deptDtoSet = new HashSet<>();
+        for (Long id : ids) {
+            List<Dept> deptChildren = deptService.findByPid(id);
+            deptDtoSet.add(deptService.findById(id));
+            if (CollectionUtil.isNotEmpty(deptChildren)) {
+                deptDtoSet = deptService.getDeleteDeptLst(deptChildren, deptDtoSet);
+            }
+        }
+        deptService.verification(deptDtoSet);
+        deptService.delete(deptDtoSet);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Log("修改部门")
+    @ApiOperation("修改部门")
+    @PutMapping
+    @PreAuthorize("@dtf.check('dept:edit')")
+    public ResponseEntity<Object> update(@Validated(BaseEntity.Update.class) @RequestBody Dept dept) {
+        deptService.update(dept);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @ApiOperation("查询部门")
+    @GetMapping
+    @PreAuthorize("@dtf.check('user:list','dept:list')")
+    public ResponseEntity<Object> query(DeptQueryCriteria criteria) throws Exception {
+        List<DeptDto> deptDtoList = deptService.queryAll(criteria, true);
+        return new ResponseEntity<>(PageUtil.toPage(deptDtoList, deptDtoList.size()), HttpStatus.OK);
     }
 
     @ApiOperation("导出部门数据")
