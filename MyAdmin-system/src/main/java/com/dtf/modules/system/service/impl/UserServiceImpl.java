@@ -1,5 +1,6 @@
 package com.dtf.modules.system.service.impl;
 
+import com.dtf.exception.EntityExistException;
 import com.dtf.exception.EntityNotFoundException;
 import com.dtf.modules.system.domain.User;
 import com.dtf.modules.system.repository.UserRepository;
@@ -32,6 +33,20 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+
+    @Override
+    public void create(User user) {
+        if (userRepository.findByUsername(user.getUsername()) != null) {
+            throw new EntityExistException(User.class, "username", user.getUsername());
+        }
+        if (userRepository.findByEmail(user.getEmail()) != null) {
+            throw new EntityExistException(User.class, "email", user.getEmail());
+        }
+        if (userRepository.findByPhone(user.getPhone()) != null) {
+            throw new EntityExistException(User.class, "phone", user.getPhone());
+        }
+        userRepository.save(user);
+    }
 
     @Override
     public UserDto findByName(String username) {

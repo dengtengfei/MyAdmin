@@ -4,22 +4,22 @@ import com.dtf.modules.system.domain.Menu;
 import com.dtf.modules.system.domain.Role;
 import com.dtf.modules.system.repository.RoleRepository;
 import com.dtf.modules.system.service.RoleService;
+import com.dtf.modules.system.service.dto.RoleDto;
 import com.dtf.modules.system.service.dto.RoleSmallDto;
 import com.dtf.modules.system.service.dto.UserDto;
 import com.dtf.modules.system.service.mapstruct.RoleMapper;
 import com.dtf.modules.system.service.mapstruct.RoleSmallMapper;
 import com.dtf.utils.StringUtils;
+import com.dtf.utils.ValidationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -37,8 +37,33 @@ public class RoleServiceImpl implements RoleService {
     private final RoleSmallMapper roleSmallMapper;
 
     @Override
+    public List<RoleDto> queryAll() {
+        Sort sort = Sort.by(Sort.Direction.ASC, "level");
+        return roleMapper.toDto(roleRepository.findAll(sort));
+    }
+
+    @Override
+    public RoleDto findById(long id) {
+        Role role = roleRepository.findById(id).orElseGet(Role::new);
+        ValidationUtil.isNull(role.getId(), "Role", "id", id);
+        return roleMapper.toDto(role);
+    }
+
+    @Override
     public List<RoleSmallDto> findByUsersId(Long id) {
         return roleSmallMapper.toDto(new ArrayList<>(roleRepository.findByUserId(id)));
+    }
+
+    @Override
+    public Integer findByRoles(Set<Role> roleSet) {
+        if (roleSet.size() == 0) {
+            return Integer.MAX_VALUE;
+        }
+        Set<RoleDto> roleDtoSet = new HashSet<>();
+        for (Role role : roleSet) {
+            roleDtoSet.add(findById(role.getId()));
+        }
+        return Collections.min(roleDtoSet.stream().map(RoleDto::getLevel).collect(Collectors.toList()));
     }
 
     @Override

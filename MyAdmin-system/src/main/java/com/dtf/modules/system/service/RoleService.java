@@ -19,9 +19,18 @@ import java.util.Set;
  * 3 * @Date:  2021/6/14 21:14
  */
 public interface RoleService {
-//    List<RoleDto> queryAll();
-//
-//    RoleDto findById(long id);
+    /**
+     * 查询所有角色
+     * @return
+     */
+    List<RoleDto> queryAll();
+
+    /**
+     * 根据 id 查询
+     * @param id
+     * @return
+     */
+    RoleDto findById(long id);
 //
 //    void create(Role role);
 //
@@ -35,8 +44,13 @@ public interface RoleService {
      * @return
      */
     List<RoleSmallDto> findByUsersId(Long id);
-//
-//    Integer findByRoles(Set<Role> roles);
+
+    /**
+     * 根据角色查询角色级别
+     * @param roles
+     * @return
+     */
+    Integer findByRoles(Set<Role> roles);
 //
 //    void updateMenu(Role role, RoleDto roleDto);
 //

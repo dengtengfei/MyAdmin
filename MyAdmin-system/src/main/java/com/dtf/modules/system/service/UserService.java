@@ -26,8 +26,12 @@ public interface UserService {
      * @return
      */
     UserDto findById(long id);
-//
-//    void create(User user);
+
+    /**
+     * 创建用户
+     * @param user
+     */
+    void create(User user);
 //
 //    void update(User user) throws Exception;
 //

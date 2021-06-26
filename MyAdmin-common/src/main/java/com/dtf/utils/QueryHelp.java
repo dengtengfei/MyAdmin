@@ -54,7 +54,7 @@ public class QueryHelp {
                     String attributeName = StringUtils.isBlank(propName) ? field.getName() : propName;
                     Class<?> fieldType = field.getType();
                     Object val = field.get(query);
-                    if (ObjectUtil.isNotNull(val) || "".equals(val)) {
+                    if (ObjectUtil.isNull(val) || "".equals(val)) {
                         continue;
                     }
                     Join join = null;

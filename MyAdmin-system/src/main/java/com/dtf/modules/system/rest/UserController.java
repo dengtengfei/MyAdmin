@@ -1,7 +1,11 @@
 package com.dtf.modules.system.rest;
 
+import com.dtf.annotation.Log;
+import com.dtf.exception.BadRequestException;
 import com.dtf.modules.system.domain.Dept;
+import com.dtf.modules.system.domain.User;
 import com.dtf.modules.system.service.*;
+import com.dtf.modules.system.service.dto.RoleSmallDto;
 import com.dtf.modules.system.service.dto.UserQueryCriteria;
 import com.dtf.utils.PageUtil;
 import com.dtf.utils.SecurityUtils;
@@ -15,11 +19,12 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 0 *
@@ -38,6 +43,17 @@ public class UserController {
     private final DeptService deptService;
     private final RoleService roleService;
     private final VerifyService verifyService;
+
+    @Log("新增用户")
+    @ApiOperation("新增用户")
+    @PostMapping
+    @PreAuthorize("@dtf.check('user:add')")
+    public ResponseEntity<Object> create(@Validated @RequestBody User user) {
+        checkLevel(user);
+        user.setPassword(passwordEncoder.encode("123456"));
+        userService.create(user);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
 
     @ApiOperation("查询用户")
     @GetMapping
@@ -59,5 +75,17 @@ public class UserController {
             return new ResponseEntity<>(userService.queryAll(criteria, pageable), HttpStatus.OK);
         }
         return new ResponseEntity<>(PageUtil.toPage(null, 0), HttpStatus.OK);
+    }
+
+    /**
+     * level 值越小 权限越大
+     * @param user \
+     */
+    private void checkLevel(User user) {
+        Integer currentLevel = Collections.min(roleService.findByUsersId(SecurityUtils.getCurrentUserId()).stream().map(RoleSmallDto::getLevel).collect(Collectors.toList()));
+        Integer optLevel = roleService.findByRoles(user.getRoles());
+        if (currentLevel > optLevel) {
+            throw new BadRequestException("角色权限不足");
+        }
     }
 }

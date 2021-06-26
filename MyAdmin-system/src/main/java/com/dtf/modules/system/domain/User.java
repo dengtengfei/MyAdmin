@@ -27,7 +27,7 @@ import java.util.Set;
 public class User extends BaseEntity implements Serializable {
     @Id
     @Column(name = "user_id")
-    @NotNull
+    @NotNull(groups = Update.class)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ApiModelProperty(value = "ID", hidden = true)
     private Long id;
