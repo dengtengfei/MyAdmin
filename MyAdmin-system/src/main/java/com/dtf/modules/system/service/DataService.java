@@ -11,5 +11,10 @@ import java.util.List;
  * 3 * @Date:  2021/6/14 21:16
  */
 public interface DataService {
+    /**
+     * 根据用户获取部门id列表
+     * @param user \
+     * @return \
+     */
     List<Long> getDeptIds(UserDto user);
 }

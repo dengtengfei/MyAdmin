@@ -6,6 +6,7 @@ import com.dtf.modules.security.service.dto.OnlineUserDto;
 import com.dtf.utils.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -66,6 +67,17 @@ public class OnlineUserService {
         }
         onlineUserDtoList.sort((o1, o2) -> o2.getLoginTime().compareTo(o1.getLoginTime()));
         return onlineUserDtoList;
+    }
+
+    @Async
+    public void kickOutForUsername(String username) throws Exception {
+        List<OnlineUserDto> onlineUserDtoList = getAll(username);
+        for (OnlineUserDto onlineUserDto : onlineUserDtoList) {
+            if (onlineUserDto.getUsername().equals(username)) {
+                String token = EncryptUtils.desDecrypt(onlineUserDto.getKey());
+                kickOut(token);
+            }
+        }
     }
 
     /**

@@ -15,13 +15,36 @@ import java.util.Map;
  * 3 * @Date:  2021/6/24 22:05
  */
 public interface DictDetailService {
+    /**
+     * 创建字典
+     * @param dictDetail \
+     */
     void create(DictDetail dictDetail);
 
+    /**
+     * 更新
+     * @param dictDetail \
+     */
     void update(DictDetail dictDetail);
 
+    /**
+     * 删除
+     * @param id \
+     */
     void delete(Long id);
 
+    /**
+     * 查询全部
+     * @param criteria \
+     * @param pageable \
+     * @return \
+     */
     Map<String ,Object> queryAll(DictDetailQueryCriteria criteria, Pageable pageable);
 
+    /**
+     * 根据名称获取
+     * @param name \
+     * @return \
+     */
     List<DictDetailDto> getDictByName(String name);
 }

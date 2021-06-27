@@ -3,8 +3,10 @@ package com.dtf.modules.system.repository;
 import com.dtf.modules.system.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -16,30 +18,55 @@ import java.util.Set;
  */
 public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificationExecutor<User> {
     /**
+     * 根据 id 列表删除
+     * @param ids \
+     */
+    void deleteAllByIdIn(Set<Long> ids);
+
+    /**
+     * 修改密码
+     * @param username \
+     * @param password \
+     * @param date \
+     */
+    @Modifying
+    @Query(value = "UPDATE sys_user SET password = ?2, pwd_reset_time = ?3 WHERE username = ?1", nativeQuery = true)
+    void updatePass(String username, String password, Date date);
+
+    /**
+     * 修改邮箱
+     * @param username \
+     * @param email \
+     */
+    @Modifying
+    @Query(value = "UPDATE sys_user SET email = ?2 WHERE username = ?1", nativeQuery = true)
+    void updateEmail(String username, String email);
+
+    /**
      * 根据用户名查询
      * @param username 用户名
-     * @return /
+     * @return \
      */
     User findByUsername(String username);
 
     /**
      * 根据邮箱查询
-     * @param email
-     * @return
+     * @param email \
+     * @return \
      */
     User findByEmail(String email);
 
     /**
      * 根据手机号码查询
-     * @param phone
-     * @return
+     * @param phone \
+     * @return \
      */
     User findByPhone(String phone);
 
     /**
      * 根据角色中的部门查询
-     * @param deptId
-     * @return
+     * @param deptId \
+     * @return \
      */
     @Query(value = "SELECT u.* FROM sys_user u, sys_users_roles r, sys_roles_depts d WHERE " +
     "u.user_id = r.user_id AND r.role_id = d.role_id AND d.dept_id = ?1 group by u.user_id", nativeQuery = true)
@@ -49,8 +76,8 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
 
     /**
      * 根据部门id查询用户数量
-     * @param deptIds
-     * @return
+     * @param deptIds \
+     * @return \
      */
     int countByDeptIdIn(Set<Long> deptIds);
 }

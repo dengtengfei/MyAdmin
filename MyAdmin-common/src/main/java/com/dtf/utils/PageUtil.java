@@ -7,6 +7,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 0 *
+ * 1 * @Author:  deng.tengfei
+ * 2 * @email:  imdtf@qq.com
+ * 3 * @Date:  2021/6/13 1:39
+ */
 public class PageUtil extends cn.hutool.core.util.PageUtil {
     public static List toPage(int page, int size, List list) {
         int fromIndex = page * size;

@@ -16,7 +16,7 @@ import java.util.Set;
 public interface DeptService {
     /**
      * 创建
-     * @param dept
+     * @param dept \
      */
     void create(Dept dept);
 
@@ -28,9 +28,9 @@ public interface DeptService {
 
     /**
      * 获取待删除的部门
-     * @param deptList
-     * @param deptDtoSet
-     * @return
+     * @param deptList \
+     * @param deptDtoSet \
+     * @return \
      */
     Set<DeptDto> getDeleteDeptLst(List<Dept> deptList, Set<DeptDto> deptDtoSet);
 
@@ -42,9 +42,10 @@ public interface DeptService {
 
     /**
      * 查询全部
-     * @param criteria 条件
-     * @param isQuery 是否查询
-     * @return
+     * @param criteria \
+     * @param isQuery \
+     * @return \
+     * @throws IllegalAccessException \
      */
     List<DeptDto> queryAll(DeptQueryCriteria criteria, Boolean isQuery) throws IllegalAccessException;
 
@@ -57,22 +58,22 @@ public interface DeptService {
 
     /**
      * 根据PID查询
-     * @param pid
-     * @return
+     * @param pid \
+     * @return \
      */
     List<Dept> findByPid(long pid);
 
     /**
      * 根据角色 ID 查询
-     * @param id
-     * @return
+     * @param id \
+     * @return \
      */
     Set<Dept> findByRoleId(Long id);
 
     /**
      * 获取子部门id列表
-     * @param deptList
-     * @return
+     * @param deptList \
+     * @return \
      */
     List<Long> getDeptChildren(List<Dept> deptList);
 

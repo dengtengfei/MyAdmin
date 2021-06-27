@@ -7,7 +7,10 @@ package com.dtf.utils;
  * 3 * @Date:  2021/6/13 1:45
  */
 public interface CacheKey {
-    String DATA_USER = "data::user";
-    String DEPT_ID = "dept::id";
-    String DICT_NAME = "dict::name";
+    String DATA_USER = "data::user:";
+    String DEPT_ID = "dept::id:";
+    String DICT_NAME = "dict::name:";
+    String USER_ID = "user::id:";
+    String MENU_USER = "menu::user:";
+    String ROLE_AUTH = "role::auth:";
 }

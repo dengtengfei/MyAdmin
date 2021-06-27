@@ -73,7 +73,7 @@ public class EncryptUtils {
 
     private static byte[] hex2Byte(byte[] b) {
         int size = 2;
-        if ((b.length % 2) !=  0) {
+        if ((b.length % size) !=  0) {
             throw new IllegalArgumentException("DES解密长度不是偶数");
         }
         byte[] b2 = new byte[b.length / 2];

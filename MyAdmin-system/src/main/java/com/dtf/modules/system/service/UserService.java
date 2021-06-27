@@ -20,22 +20,51 @@ import java.util.Set;
  */
 public interface UserService {
     /**
-     * 根据id查询
-     *
-     * @param id
-     * @return
-     */
-    UserDto findById(long id);
-
-    /**
      * 创建用户
-     * @param user
+     * @param user \
      */
     void create(User user);
-//
-//    void update(User user) throws Exception;
-//
-//    void delete(Set<Long> ids);
+
+    /**
+     * 删除用户
+     * @param ids \
+     */
+    void delete(Set<Long> ids);
+
+    /**
+     * 修改用户
+     * @param user \
+     * @throws Exception \
+     */
+    void update(User user) throws Exception;
+
+    /**
+     * 更新自主修改资料
+     * @param user
+     */
+    void updateCenter(User user);
+
+    /**
+     * 修改密码
+     * @param username \
+     * @param encryptPassword \
+     */
+    void updatePass(String username, String encryptPassword);
+
+    /**
+     * 修改邮箱
+     * @param username \
+     * @param email \
+     */
+    void updateEmail(String username, String email);
+
+    /**
+     * 根据id查询
+     *
+     * @param id \
+     * @return \
+     */
+    UserDto findById(long id);
 
     /**
      * 根据用户名查询
@@ -43,24 +72,18 @@ public interface UserService {
      * @return \
      */
     UserDto findByName(String username);
-
-//    void updatePass(String user, String encryptPassword);
 //
 //    Map<String, String> updateAvatar(MultipartFile file);
-//
-//    void updateEmail(String username, String email);
 
     /**
      * 根据条件查询所有
      * @param criteria \
      * @param pageable \
-     * @return
+     * @return \
      */
     Object queryAll(UserQueryCriteria criteria, Pageable pageable);
 //
 //    List<UserDto> queryAll(UserQueryCriteria criterial);
 //
 //    void download(List<UserDto> queryAll, HttpServletResponse response) throws IOException;
-//
-//    void updateCenter(User user);
 }

@@ -14,7 +14,16 @@ import java.util.Set;
  * 3 * @Date:  2021/6/24 22:27
  */
 public interface DictRepository extends JpaRepository<Dict, Long>, JpaSpecificationExecutor<Dict> {
+    /**
+     * 根据id列表删除
+     * @param ids \
+     */
     void deleteByIdIn(Set<Long> ids);
 
+    /**
+     * 根据id列表查询
+     * @param ids \
+     * @return \
+     */
     List<Dict> findByIdIn(Set<Long> ids);
 }

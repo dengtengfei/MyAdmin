@@ -74,8 +74,11 @@ public @interface Query {
      * 简单连接查询
      */
     enum Join {
+        // \\
         LEFT,
+        // \\
         RIGHT,
+        // \\
         INNER
     }
 }

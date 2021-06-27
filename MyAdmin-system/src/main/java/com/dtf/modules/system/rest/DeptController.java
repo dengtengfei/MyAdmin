@@ -90,7 +90,7 @@ public class DeptController {
 
     @ApiOperation("导出部门数据")
     @GetMapping(value = "/download")
-//    @PreAuthorize("@el.check('dept:list')")
+    @PreAuthorize("@dtf.check('dept:list')")
     public void download(HttpServletResponse response) {
     }
 }
