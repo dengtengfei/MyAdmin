@@ -78,6 +78,21 @@ public interface DeptService {
     List<Long> getDeptChildren(List<Dept> deptList);
 
     /**
+     * 获取同级与上级数据
+     * @param deptDto \
+     * @param deptList \
+     * @return \
+     */
+    List<DeptDto> getSuperior(DeptDto deptDto, List<Dept> deptList);
+
+    /**
+     * 构建部门树
+     * @param deptDtoList
+     * @return
+     */
+    Object buildTree(List<DeptDto> deptDtoList);
+
+    /**
      * 验证是否被角色或者用户关联
      * @param deptDtoSet \
      */

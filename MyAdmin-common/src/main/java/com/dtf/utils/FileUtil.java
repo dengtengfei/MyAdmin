@@ -4,6 +4,7 @@ import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.poi.excel.BigExcelWriter;
 import cn.hutool.poi.excel.ExcelUtil;
+import com.dtf.exception.BadRequestException;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -69,6 +72,7 @@ public class FileUtil extends cn.hutool.core.io.FileUtil {
 
     /**
      * 扩展名
+     *
      * @param filename
      * @return
      */
@@ -77,6 +81,16 @@ public class FileUtil extends cn.hutool.core.io.FileUtil {
             int dot = filename.lastIndexOf('.');
             if ((dot > -1) && (dot < (filename.length() - 1))) {
                 return filename.substring(dot + 1);
+            }
+        }
+        return filename;
+    }
+
+    public static String getFileNameNoEx(String filename) {
+        if (filename != null && filename.length() > 0) {
+            int dot = filename.lastIndexOf('.');
+            if (dot > -1 && dot < filename.length()) {
+                return filename.substring(0, dot);
             }
         }
         return filename;
@@ -96,5 +110,35 @@ public class FileUtil extends cn.hutool.core.io.FileUtil {
         file.deleteOnExit();
         writer.flush(outputStream, true);
         IoUtil.close(outputStream);
+    }
+
+    public static void checkSize(long maxSize, long size) {
+        int m = 1024 * 1024;
+        if (size > (maxSize * m)) {
+            throw new BadRequestException("文件大小不能超过: " + maxSize + "MB.");
+        }
+    }
+
+    public static File upload(MultipartFile file, String filePath) {
+        Date date = new Date();
+        SimpleDateFormat format = new SimpleDateFormat("yyyyMMddhhmmssS");
+        String name = getFileNameNoEx(file.getOriginalFilename());
+        String suffix = getExtensionName(file.getOriginalFilename());
+        String nowStr = "-" + format.format(date);
+        try {
+            String fileName = name + nowStr + "." + suffix;
+            String path = filePath + fileName;
+            File dest = new File(path).getCanonicalFile();
+            if (!dest.getParentFile().exists()) {
+                if (!dest.getParentFile().mkdirs()) {
+                    System.out.println("create dir failed.");
+                }
+            }
+            file.transferTo(dest);
+            return dest;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+        return null;
     }
 }

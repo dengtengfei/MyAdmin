@@ -17,6 +17,15 @@ import java.util.Set;
  */
 public interface DeptRepository extends JpaRepository<Dept, Long>, JpaSpecificationExecutor<Dept> {
     /**
+     * 更新部门子节点数量
+     * @param count 数量
+     * @param id 部门id
+     */
+    @Modifying
+    @Query(value = "update sys_dept set sub_count = ?1 where id = ?2", nativeQuery = true)
+    void updateSubCntById(Integer count, Long id);
+
+    /**
      * 根据PID查询
      * @param pid
      * @return
@@ -39,11 +48,8 @@ public interface DeptRepository extends JpaRepository<Dept, Long>, JpaSpecificat
     int countByPid(Long pid);
 
     /**
-     * 更新部门子节点数量
-     * @param count 数量
-     * @param id 部门id
+     * 获取一级部门
+     * @return
      */
-    @Modifying
-    @Query(value = "update sys_dept set sub_count = ?1 where id = ?2", nativeQuery = true)
-    void updateSubCntById(Integer count, Long id);
+    List<Dept> findByPidIsNull();
 }

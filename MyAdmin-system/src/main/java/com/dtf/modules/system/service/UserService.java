@@ -21,18 +21,21 @@ import java.util.Set;
 public interface UserService {
     /**
      * 创建用户
+     *
      * @param user \
      */
     void create(User user);
 
     /**
      * 删除用户
+     *
      * @param ids \
      */
     void delete(Set<Long> ids);
 
     /**
      * 修改用户
+     *
      * @param user \
      * @throws Exception \
      */
@@ -40,23 +43,34 @@ public interface UserService {
 
     /**
      * 更新自主修改资料
-     * @param user
+     *
+     * @param user \
      */
     void updateCenter(User user);
 
     /**
      * 修改密码
-     * @param username \
+     *
+     * @param username        \
      * @param encryptPassword \
      */
     void updatePass(String username, String encryptPassword);
 
     /**
      * 修改邮箱
+     *
      * @param username \
-     * @param email \
+     * @param email    \
      */
     void updateEmail(String username, String email);
+
+    /**
+     * 修改头像
+     *
+     * @param file \
+     * @return \
+     */
+    Map<String, String> updateAvatar(MultipartFile file);
 
     /**
      * 根据id查询
@@ -68,22 +82,35 @@ public interface UserService {
 
     /**
      * 根据用户名查询
+     *
      * @param username \
      * @return \
      */
     UserDto findByName(String username);
-//
-//    Map<String, String> updateAvatar(MultipartFile file);
 
     /**
      * 根据条件查询所有
+     *
      * @param criteria \
      * @param pageable \
      * @return \
      */
     Object queryAll(UserQueryCriteria criteria, Pageable pageable);
-//
-//    List<UserDto> queryAll(UserQueryCriteria criterial);
-//
-//    void download(List<UserDto> queryAll, HttpServletResponse response) throws IOException;
+
+    /**
+     * 不分页查询全部
+     *
+     * @param criteria \
+     * @return \
+     */
+    List<UserDto> queryAll(UserQueryCriteria criteria);
+
+    /**
+     * 导出用户数据
+     *
+     * @param queryAll \
+     * @param response \
+     * @throws IOException \
+     */
+    void download(List<UserDto> queryAll, HttpServletResponse response) throws IOException;
 }

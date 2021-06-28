@@ -26,7 +26,10 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -129,6 +132,13 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @Log("修改头像")
+    @ApiOperation("修改头像")
+    @PostMapping(value = "/updateAvatar")
+    public ResponseEntity<Object> updateAvatar(@RequestParam MultipartFile avatar) {
+        return new ResponseEntity<>(userService.updateAvatar(avatar), HttpStatus.OK);
+    }
+
     @ApiOperation("查询用户")
     @GetMapping
     @PreAuthorize("@dtf.check('user:list')")
@@ -149,6 +159,13 @@ public class UserController {
             return new ResponseEntity<>(userService.queryAll(criteria, pageable), HttpStatus.OK);
         }
         return new ResponseEntity<>(PageUtil.toPage(null, 0), HttpStatus.OK);
+    }
+
+    @ApiOperation("导出用户数据")
+    @GetMapping(value = "/download")
+    @PreAuthorize("@dtf.check('user:list')")
+    public void download(HttpServletResponse response, UserQueryCriteria criteria) throws IOException {
+        userService.download(userService.queryAll(criteria), response);
     }
 
     /**

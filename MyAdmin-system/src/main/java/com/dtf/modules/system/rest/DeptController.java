@@ -19,9 +19,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 0 *
@@ -86,6 +84,19 @@ public class DeptController {
     public ResponseEntity<Object> query(DeptQueryCriteria criteria) throws Exception {
         List<DeptDto> deptDtoList = deptService.queryAll(criteria, true);
         return new ResponseEntity<>(PageUtil.toPage(deptDtoList, deptDtoList.size()), HttpStatus.OK);
+    }
+
+    @ApiOperation("查询部门: 根据ID获取同级与上级数据")
+    @PostMapping("/superior")
+    @PreAuthorize("@dtf.check('user:list','dept:list')")
+    public ResponseEntity<Object> getSuperior(@RequestBody List<Long> ids) {
+        Set<DeptDto> deptDtoSet = new LinkedHashSet<>();
+        for (Long id : ids) {
+            DeptDto deptDto = deptService.findById(id);
+            List<DeptDto> deptDtoList = deptService.getSuperior(deptDto, new ArrayList<>());
+            deptDtoSet.addAll(deptDtoList);
+        }
+        return new ResponseEntity<>(deptService.buildTree(new ArrayList<>(deptDtoSet)), HttpStatus.OK);
     }
 
     @ApiOperation("导出部门数据")

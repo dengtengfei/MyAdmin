@@ -21,9 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -185,6 +183,53 @@ public class DeptServiceImpl implements DeptService {
             }
         });
         return list;
+    }
+
+    @Override
+    public List<DeptDto> getSuperior(DeptDto deptDto, List<Dept> deptList) {
+        if (deptDto.getPid() == null) {
+            deptList.addAll(deptRepository.findByPidIsNull());
+            return deptMapper.toDto(deptList);
+        }
+        deptList.addAll(deptRepository.findByPid(deptDto.getPid()));
+        // parent
+        return getSuperior(findById(deptDto.getPid()), deptList);
+    }
+
+    @Override
+    public Object buildTree(List<DeptDto> deptDtoList) {
+        // TODO
+        Set<DeptDto> treeSet = new LinkedHashSet<>(), deptSet = new LinkedHashSet<>();
+        List<String> deptNames = deptDtoList.stream().map(DeptDto::getName).collect(Collectors.toList());
+        boolean isChild;
+        for (DeptDto deptDto : deptDtoList) {
+            isChild = false;
+            if (deptDto.getPid() == null) {
+                treeSet.add(deptDto);
+            }
+            for (DeptDto it : deptDtoList) {
+                if (it.getPid() != null && it.getPid().equals(deptDto.getId())) {
+                    isChild = true;
+                    if (deptDto.getChildren() == null) {
+                        deptDto.setChildren(new ArrayList<>());
+                    }
+                    deptDto.getChildren().add(it);
+                }
+            }
+            if (isChild) {
+                deptSet.add(deptDto);
+            } else if (deptDto.getPid() != null && !deptNames.contains(findById(deptDto.getPid()).getName())) {
+                deptSet.add(deptDto);
+            }
+        }
+
+        if (CollectionUtil.isEmpty(treeSet)) {
+            treeSet = deptSet;
+        }
+        Map<String, Object> map = new HashMap<>(2);
+        map.put("totalElements", deptDtoList.size());
+        map.put("content", CollectionUtil.isEmpty(treeSet) ? deptDtoList : treeSet);
+        return map;
     }
 
     @Override

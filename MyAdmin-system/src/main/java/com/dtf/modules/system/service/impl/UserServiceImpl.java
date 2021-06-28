@@ -1,5 +1,7 @@
 package com.dtf.modules.system.service.impl;
 
+import com.dtf.config.FileProperties;
+import com.dtf.exception.BadRequestException;
 import com.dtf.exception.EntityExistException;
 import com.dtf.exception.EntityNotFoundException;
 import com.dtf.modules.security.service.OnlineUserService;
@@ -7,6 +9,8 @@ import com.dtf.modules.security.service.UserCacheClean;
 import com.dtf.modules.system.domain.User;
 import com.dtf.modules.system.repository.UserRepository;
 import com.dtf.modules.system.service.UserService;
+import com.dtf.modules.system.service.dto.JobSmallDto;
+import com.dtf.modules.system.service.dto.RoleSmallDto;
 import com.dtf.modules.system.service.dto.UserDto;
 import com.dtf.modules.system.service.dto.UserQueryCriteria;
 import com.dtf.modules.system.service.mapstruct.UserMapper;
@@ -18,9 +22,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Date;
-import java.util.Set;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotBlank;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 /**
@@ -35,6 +44,7 @@ import java.util.Set;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final FileProperties properties;
     private final RedisUtils redisUtils;
     private final UserCacheClean userCacheClean;
     private final OnlineUserService onlineUserService;
@@ -131,6 +141,31 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Map<String, String> updateAvatar(MultipartFile multipartFile) {
+        FileUtil.checkSize(properties.getAvatarMaxSize(), multipartFile.getSize());
+
+        String imageType = "gif jpg png jpeg";
+        String fileType = FileUtil.getExtensionName(multipartFile.getOriginalFilename());
+        if (fileType != null && !imageType.contains(fileType)) {
+            throw new BadRequestException("文件格式错误，仅支持 " + imageType + " 格式");
+        }
+        User user = userRepository.findByUsername(SecurityUtils.getCurrentUsername());
+        String oldPath = user.getAvatarPath();
+        File file = FileUtil.upload(multipartFile, properties.getPath().getAvatar());
+        user.setAvatarPath(Objects.requireNonNull(file).getPath());
+        user.setAvatarName(file.getName());
+        userRepository.save(user);
+        if (StringUtils.isNotBlank(oldPath)) {
+            FileUtil.del(oldPath);
+        }
+        @NotBlank String username = user.getUsername();
+        flushCache(username);
+        return new HashMap<String, String>(1) {{
+            put("avatar", file.getName());
+        }};
+    }
+
+    @Override
     public UserDto findByName(String username) {
         User user = userRepository.findByUsername(username);
         if (user == null) {
@@ -153,6 +188,32 @@ public class UserServiceImpl implements UserService {
     public Object queryAll(UserQueryCriteria criteria, Pageable pageable) {
         Page<User> page = userRepository.findAll((root, criteriaQuery, criteriaBuilder) -> QueryHelp.getPredicate(root, criteria, criteriaBuilder), pageable);
         return PageUtil.toPage(page.map(userMapper::toDto));
+    }
+
+    @Override
+    public List<UserDto> queryAll(UserQueryCriteria criteria) {
+        List<User> users = userRepository.findAll((root, criteriaQuery, criteriaBuilder) -> QueryHelp.getPredicate(root, criteria, criteriaBuilder));
+        return userMapper.toDto(users);
+    }
+
+    @Override
+    public void download(List<UserDto> userDtoList, HttpServletResponse response) throws IOException {
+        List<Map<String, Object>> list = new ArrayList<>();
+        for (UserDto userDto : userDtoList) {
+            List<String> roles = userDto.getRoles().stream().map(RoleSmallDto::getName).collect(Collectors.toList());
+            Map<String, Object> map = new LinkedHashMap<>();
+            map.put("用户名", userDto.getUsername());
+            map.put("角色", roles);
+            map.put("部门", userDto.getDept().getName());
+            map.put("岗位", userDto.getJobs().stream().map(JobSmallDto::getName).collect(Collectors.toList()));
+            map.put("邮箱", userDto.getEmail());
+            map.put("状态", userDto.getEnabled() ? "启用" : "禁用");
+            map.put("手机号码", userDto.getPhone());
+            map.put("密码修改时间", userDto.getPwdResetTime());
+            map.put("创建日期", userDto.getCreateTime());
+            list.add(map);
+        }
+        FileUtil.downloadExcel(list, response);
     }
 
     private void delCaches(Long id, String username) {
