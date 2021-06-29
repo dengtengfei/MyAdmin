@@ -53,17 +53,6 @@ public class BaseEntity implements Serializable {
 
     @Override
     public String toString() {
-//        ToStringBuilder builder = new ToStringBuilder(this);
-//        Field[] fields = this.getClass().getDeclaredFields();
-//        try {
-//            for (Field field : fields) {
-//                field.setAccessible(true);
-//                builder.append(field.getName(), field.get(this)).append('\n');
-//            }
-//        } catch (Exception e) {
-//            builder.append("toString builder encounter an error: " + e.getMessage());
-//        }
-//        return builder.toString();
         return ToStringUtils.toMyString(this);
     }
 }

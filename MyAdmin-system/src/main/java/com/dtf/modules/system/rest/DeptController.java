@@ -19,6 +19,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -102,6 +103,7 @@ public class DeptController {
     @ApiOperation("导出部门数据")
     @GetMapping(value = "/download")
     @PreAuthorize("@dtf.check('dept:list')")
-    public void download(HttpServletResponse response) {
+    public void download(HttpServletResponse response, DeptQueryCriteria criteria) throws IllegalAccessException, IOException {
+        deptService.download(deptService.queryAll(criteria, false), response);
     }
 }

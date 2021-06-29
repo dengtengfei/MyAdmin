@@ -20,6 +20,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -59,18 +61,6 @@ public class DeptServiceImpl implements DeptService {
             deptRepository.deleteById(deptDto.getId());
             updateSubCnt(deptDto.getPid());
         }
-    }
-
-    @Override
-    public Set<DeptDto> getDeleteDeptLst(List<Dept> deptList, Set<DeptDto> deptDtoSet) {
-        for (Dept dept : deptList) {
-            deptDtoSet.add(deptMapper.toDto(dept));
-            List<Dept> deptChildren = deptRepository.findByPid(dept.getId());
-            if (CollectionUtil.isNotEmpty(deptChildren)) {
-                getDeleteDeptLst(deptChildren, deptDtoSet);
-            }
-        }
-        return deptDtoSet;
     }
 
     @Override
@@ -186,6 +176,18 @@ public class DeptServiceImpl implements DeptService {
     }
 
     @Override
+    public Set<DeptDto> getDeleteDeptLst(List<Dept> deptList, Set<DeptDto> deptDtoSet) {
+        for (Dept dept : deptList) {
+            deptDtoSet.add(deptMapper.toDto(dept));
+            List<Dept> deptChildren = deptRepository.findByPid(dept.getId());
+            if (CollectionUtil.isNotEmpty(deptChildren)) {
+                getDeleteDeptLst(deptChildren, deptDtoSet);
+            }
+        }
+        return deptDtoSet;
+    }
+
+    @Override
     public List<DeptDto> getSuperior(DeptDto deptDto, List<Dept> deptList) {
         if (deptDto.getPid() == null) {
             deptList.addAll(deptRepository.findByPidIsNull());
@@ -241,5 +243,18 @@ public class DeptServiceImpl implements DeptService {
         if (roleRepository.countByDeptIds(deptIds) > 0) {
             throw new BadRequestException("所选部门存在角色关联，请解除后再试！");
         }
+    }
+
+    @Override
+    public void download(List<DeptDto> deptDtoList, HttpServletResponse response) throws IOException {
+        List<Map<String, Object>> list = new ArrayList<>();
+        for (DeptDto deptDto : deptDtoList) {
+            Map<String, Object> map = new LinkedHashMap<>();
+            map.put("部门名称", deptDto.getName());
+            map.put("部门状态", deptDto.getEnabled() ? "启用" : "停用");
+            map.put("创建日期", deptDto.getCreateTime());
+            list.add(map);
+        }
+        FileUtil.downloadExcel(list, response);
     }
 }

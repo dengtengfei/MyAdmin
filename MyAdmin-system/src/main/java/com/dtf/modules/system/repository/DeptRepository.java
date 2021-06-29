@@ -22,34 +22,34 @@ public interface DeptRepository extends JpaRepository<Dept, Long>, JpaSpecificat
      * @param id 部门id
      */
     @Modifying
-    @Query(value = "update sys_dept set sub_count = ?1 where id = ?2", nativeQuery = true)
+    @Query(value = "update sys_dept set sub_count = ?1 where dept_id = ?2", nativeQuery = true)
     void updateSubCntById(Integer count, Long id);
 
     /**
      * 根据PID查询
-     * @param pid
-     * @return
+     * @param pid \
+     * @return \
      */
     List<Dept> findByPid(Long pid);
 
     /**
      * 根据角色id查询部门
-      * @param roleId
-     * @return
+      * @param roleId \
+     * @return \
      */
-    @Query(value = "SELECT d.* FROM sys_dept d, sys_roles_depts r WHERE d.dept_id = r.dept_it AND d.role_id = ?1", nativeQuery = true)
+    @Query(value = "SELECT d.* FROM sys_dept d, sys_roles_depts r WHERE d.dept_id = r.dept_id AND r.role_id = ?1", nativeQuery = true)
     Set<Dept> findByRoleId(Long roleId);
 
     /**
      * 计算子节点个数
      * @param pid 节点id
-     * @return
+     * @return \
      */
     int countByPid(Long pid);
 
     /**
      * 获取一级部门
-     * @return
+     * @return \
      */
     List<Dept> findByPidIsNull();
 }

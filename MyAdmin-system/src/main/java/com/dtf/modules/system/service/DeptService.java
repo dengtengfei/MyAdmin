@@ -4,6 +4,8 @@ import com.dtf.modules.system.domain.Dept;
 import com.dtf.modules.system.service.dto.DeptDto;
 import com.dtf.modules.system.service.dto.DeptQueryCriteria;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
@@ -25,14 +27,6 @@ public interface DeptService {
      * @param deptDtoSet \
      */
     void delete(Set<DeptDto> deptDtoSet);
-
-    /**
-     * 获取待删除的部门
-     * @param deptList \
-     * @param deptDtoSet \
-     * @return \
-     */
-    Set<DeptDto> getDeleteDeptLst(List<Dept> deptList, Set<DeptDto> deptDtoSet);
 
     /**
      * 更新部门
@@ -78,6 +72,14 @@ public interface DeptService {
     List<Long> getDeptChildren(List<Dept> deptList);
 
     /**
+     * 获取待删除的部门
+     * @param deptList \
+     * @param deptDtoSet \
+     * @return \
+     */
+    Set<DeptDto> getDeleteDeptLst(List<Dept> deptList, Set<DeptDto> deptDtoSet);
+
+    /**
      * 获取同级与上级数据
      * @param deptDto \
      * @param deptList \
@@ -87,8 +89,8 @@ public interface DeptService {
 
     /**
      * 构建部门树
-     * @param deptDtoList
-     * @return
+     * @param deptDtoList \
+     * @return \
      */
     Object buildTree(List<DeptDto> deptDtoList);
 
@@ -97,4 +99,12 @@ public interface DeptService {
      * @param deptDtoSet \
      */
     void verification(Set<DeptDto> deptDtoSet);
+
+    /**
+     * 导出部门数据
+     * @param deptDtoList \
+     * @param response \
+     * @throws IOException \
+     */
+    void download(List<DeptDto> deptDtoList, HttpServletResponse response) throws IOException;
 }

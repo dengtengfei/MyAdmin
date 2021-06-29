@@ -15,5 +15,5 @@ public class DictDetailQueryCriteria {
     private String label;
 
     @Query(propName = "name", joinName = "dict")
-    private String name;
+    private String dictName;
 }
