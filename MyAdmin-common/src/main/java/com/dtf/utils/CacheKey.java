@@ -13,4 +13,5 @@ public interface CacheKey {
     String USER_ID = "user::id:";
     String MENU_USER = "menu::user:";
     String ROLE_AUTH = "role::auth:";
+    String ROLE_ID = "role::id:";
 }

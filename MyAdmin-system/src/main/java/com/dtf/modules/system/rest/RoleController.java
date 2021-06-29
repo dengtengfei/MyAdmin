@@ -1,8 +1,11 @@
 package com.dtf.modules.system.rest;
 
 import cn.hutool.core.lang.Dict;
+import com.dtf.annotation.Log;
 import com.dtf.exception.BadRequestException;
+import com.dtf.modules.system.domain.Role;
 import com.dtf.modules.system.service.RoleService;
+import com.dtf.modules.system.service.dto.RoleDto;
 import com.dtf.modules.system.service.dto.RoleSmallDto;
 import com.dtf.utils.SecurityUtils;
 import io.swagger.annotations.Api;
@@ -11,12 +14,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -32,6 +35,34 @@ import java.util.stream.Collectors;
 public class RoleController {
     private final RoleService roleService;
     private static final String ENTITY_NAME = "role";
+
+    @Log("新增角色")
+    @ApiOperation("新增角色")
+    @PostMapping
+    @PreAuthorize("@dtf.check('roles:add')")
+    public ResponseEntity<Object> create(@Validated @RequestBody Role role) {
+        if (role.getId() != null) {
+            throw new BadRequestException("A new " + ENTITY_NAME + " cannot create, because it has an ID.");
+        }
+        getLevels(role.getLevel());
+        roleService.create(role);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Log("删除角色")
+    @ApiOperation("删除角色")
+    @DeleteMapping
+    @PreAuthorize("@dtf.check('role:del')")
+    public ResponseEntity<Object> delete(@RequestBody Set<Long> ids) {
+        for (Long id : ids) {
+            RoleDto roleDto = roleService.findById(id);
+            getLevels(roleDto.getLevel());
+        }
+
+        roleService.verification(ids);
+        roleService.delete(ids);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
     @ApiOperation("查询全部角色")
     @GetMapping("/all")

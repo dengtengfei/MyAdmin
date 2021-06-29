@@ -20,39 +20,47 @@ import java.util.Set;
  */
 public interface RoleService {
     /**
-     * 查询所有角色
-     * @return
+     * 创建角色 \
+     * @param role \
      */
-    List<RoleDto> queryAll();
+    void create(Role role);
 
     /**
-     * 根据 id 查询
-     * @param id
-     * @return
+     * 删除角色
+     * @param ids 要删除的角色id
      */
-    RoleDto findById(long id);
-//
-//    void create(Role role);
+    void delete(Set<Long> ids);
 //
 //    void update(Role role);
 //
-//    void delete(Set<Long> ids);
+//    void updateMenu(Role role, RoleDto roleDto);
 
     /**
      * 根据用户id查询
-     * @param id
-     * @return
+     * @param id \
+     * @return \
      */
     List<RoleSmallDto> findByUsersId(Long id);
 
     /**
      * 根据角色查询角色级别
-     * @param roles
-     * @return
+     * @param roles \
+     * @return \
      */
     Integer findByRoles(Set<Role> roles);
-//
-//    void updateMenu(Role role, RoleDto roleDto);
+
+    /**
+     * 查询所有角色
+     * @return \
+     */
+    List<RoleDto> queryAll();
+
+    /**
+     * 根据 id 查询
+     * @param id \
+     * @return \
+     */
+    RoleDto findById(long id);
 //
 //    void untiedMenu(Long id);
 //
@@ -69,7 +77,11 @@ public interface RoleService {
      */
     List<GrantedAuthority> mapToGrantedAuthorities(UserDto user);
 
-//    void verification(Set<Long> ids);
+    /**
+     * 验证是否被用户关联
+     * @param ids 角色id列表
+     */
+    void verification(Set<Long> ids);
 //
 //    List<Role> findInMenuId(List<Long> menuIds);
 }

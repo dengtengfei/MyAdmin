@@ -64,6 +64,14 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
     User findByPhone(String phone);
 
     /**
+     * 根据角色ID查询
+     * @param roleId \
+     * @return \
+     */
+    @Query(value = "SELECT u.* from sys_user u, sys_users_roles r WHERE r.roleId = ?1 AND u.user_id = r.user_id", nativeQuery = true)
+    List<User> findByRoleId(Long roleId);
+
+    /**
      * 根据角色中的部门查询
      * @param deptId \
      * @return \
@@ -80,4 +88,12 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
      * @return \
      */
     int countByDeptIdIn(Set<Long> deptIds);
+
+    /**
+     * 根据角色 id 列表查询用户数量
+     * @param roleIds \
+     * @return \
+     */
+    @Query(value = "SELECT COUNT(1) FROM sys_user u, sys_users_roles r where r.role_id in ?1 AND r.user_id = u.user_id", nativeQuery = true)
+    int countByRoleIds(Set<Long> roleIds);
 }
