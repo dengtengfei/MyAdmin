@@ -1,6 +1,7 @@
 package com.dtf.modules.system.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import com.dtf.exception.EntityExistException;
 import com.dtf.modules.system.domain.Menu;
 import com.dtf.modules.system.domain.vo.MenuMetaVo;
 import com.dtf.modules.system.domain.vo.MenuVo;
@@ -35,6 +36,15 @@ public class MenuServiceImpl implements MenuService {
     private final MenuMapper menuMapper;
     private final RoleService roleService;
     private final RedisUtils redisUtils;
+
+    @Override
+    public void create(Menu menu) {
+        if (menuRepository.findByTitle(menu.getTitle()) != null) {
+            throw new EntityExistException(Menu.class, "title", menu.getTitle());
+        }
+        // TODO 待完成
+        menuRepository.save(menu);
+    }
 
     @Override
     public List<MenuDto> findByUser(Long userId) {

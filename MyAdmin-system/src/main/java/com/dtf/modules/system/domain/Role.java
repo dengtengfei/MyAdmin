@@ -10,6 +10,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.Set;
@@ -28,6 +29,7 @@ public class Role extends BaseEntity implements Serializable {
     @Id
     @Column(name = "role_id")
     @NotNull(groups = {Update.class})
+    @Null(groups = {Create.class})
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ApiModelProperty(value = "ID", hidden = true)
     private Long id;

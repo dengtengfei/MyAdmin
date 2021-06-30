@@ -1,5 +1,6 @@
 package com.dtf.modules.system.service;
 
+import com.dtf.modules.system.domain.Menu;
 import com.dtf.modules.system.service.dto.MenuDto;
 
 import java.util.List;
@@ -11,6 +12,12 @@ import java.util.List;
  * 3 * @Date:  2021/6/22 22:02
  */
 public interface MenuService {
+    /**
+     * 创建菜单
+     * @param menu \
+     */
+    void create(Menu menu);
+
     /**
      * 根据用户id查询菜单列表
      * @param userId \

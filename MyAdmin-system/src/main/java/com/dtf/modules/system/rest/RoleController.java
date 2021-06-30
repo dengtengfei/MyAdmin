@@ -44,10 +44,7 @@ public class RoleController {
     @ApiOperation("新增角色")
     @PostMapping
     @PreAuthorize("@dtf.check('roles:add')")
-    public ResponseEntity<Object> create(@Validated @RequestBody Role role) {
-        if (role.getId() != null) {
-            throw new BadRequestException("A new " + ENTITY_NAME + " cannot create, because it has an ID.");
-        }
+    public ResponseEntity<Object> create(@Validated(Role.Create.class) @RequestBody Role role) {
         getLevels(role.getLevel());
         roleService.create(role);
         return new ResponseEntity<>(HttpStatus.OK);

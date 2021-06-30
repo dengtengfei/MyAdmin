@@ -9,6 +9,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
@@ -27,7 +28,8 @@ import java.util.Set;
 public class User extends BaseEntity implements Serializable {
     @Id
     @Column(name = "user_id")
-    @NotNull(groups = Update.class)
+    @NotNull(groups = {Update.class})
+    @Null(groups = {Create.class})
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ApiModelProperty(value = "ID", hidden = true)
     private Long id;

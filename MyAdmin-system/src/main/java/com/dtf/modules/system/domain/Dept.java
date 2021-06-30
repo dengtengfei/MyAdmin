@@ -9,6 +9,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.Set;
@@ -26,7 +27,8 @@ import java.util.Set;
 public class Dept extends BaseEntity implements Serializable {
     @Id
     @Column(name = "dept_id")
-    @NotNull(groups = Update.class)
+    @NotNull(groups = {Update.class})
+    @Null(groups = {Create.class})
     @ApiModelProperty(value = "ID", hidden = true)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

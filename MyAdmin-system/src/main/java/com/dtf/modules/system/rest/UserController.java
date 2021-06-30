@@ -4,6 +4,7 @@ import com.dtf.annotation.Log;
 import com.dtf.config.RsaProperties;
 import com.dtf.exception.BadRequestException;
 import com.dtf.modules.system.domain.Dept;
+import com.dtf.modules.system.domain.Role;
 import com.dtf.modules.system.domain.User;
 import com.dtf.modules.system.domain.vo.UserPassVo;
 import com.dtf.modules.system.service.*;
@@ -57,7 +58,7 @@ public class UserController {
     @ApiOperation("新增用户")
     @PostMapping
     @PreAuthorize("@dtf.check('user:add')")
-    public ResponseEntity<Object> create(@Validated @RequestBody User user) {
+    public ResponseEntity<Object> create(@Validated(User.Create.class) @RequestBody User user) {
         checkLevel(user);
         user.setPassword(passwordEncoder.encode("123456"));
         userService.create(user);

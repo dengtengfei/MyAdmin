@@ -3,7 +3,6 @@ package com.dtf.modules.system.rest;
 import cn.hutool.core.collection.CollectionUtil;
 import com.dtf.annotation.Log;
 import com.dtf.base.BaseEntity;
-import com.dtf.exception.BadRequestException;
 import com.dtf.modules.system.domain.Dept;
 import com.dtf.modules.system.service.DeptService;
 import com.dtf.modules.system.service.dto.DeptDto;
@@ -44,10 +43,7 @@ public class DeptController {
     @ApiOperation("新增部门")
     @PostMapping
     @PreAuthorize("@dtf.check('dept:add')")
-    public ResponseEntity<Object> create(@Validated @RequestBody Dept dept) {
-        if (dept.getId() != null) {
-            throw new BadRequestException("A new " + ENTITY_NAME + "cannot created, because it has an id.");
-        }
+    public ResponseEntity<Object> create(@Validated(Dept.Create.class) @RequestBody Dept dept) {
         deptService.create(dept);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
