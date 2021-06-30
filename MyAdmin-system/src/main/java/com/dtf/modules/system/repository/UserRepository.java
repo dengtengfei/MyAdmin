@@ -68,7 +68,7 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
      * @param roleId \
      * @return \
      */
-    @Query(value = "SELECT u.* from sys_user u, sys_users_roles r WHERE r.roleId = ?1 AND u.user_id = r.user_id", nativeQuery = true)
+    @Query(value = "SELECT u.* from sys_user u, sys_users_roles r WHERE r.role_id = ?1 AND u.user_id = r.user_id", nativeQuery = true)
     List<User> findByRoleId(Long roleId);
 
     /**

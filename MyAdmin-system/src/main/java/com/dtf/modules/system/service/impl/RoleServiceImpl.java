@@ -11,23 +11,25 @@ import com.dtf.modules.system.repository.RoleRepository;
 import com.dtf.modules.system.repository.UserRepository;
 import com.dtf.modules.system.service.RoleService;
 import com.dtf.modules.system.service.dto.RoleDto;
+import com.dtf.modules.system.service.dto.RoleQueryCriteria;
 import com.dtf.modules.system.service.dto.RoleSmallDto;
 import com.dtf.modules.system.service.dto.UserDto;
 import com.dtf.modules.system.service.mapstruct.RoleMapper;
 import com.dtf.modules.system.service.mapstruct.RoleSmallMapper;
-import com.dtf.utils.CacheKey;
-import com.dtf.utils.RedisUtils;
-import com.dtf.utils.StringUtils;
-import com.dtf.utils.ValidationUtil;
+import com.dtf.utils.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -67,9 +69,47 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void update(Role role) {
+        Role oldRole = roleRepository.findById(role.getId()).orElseGet(Role::new);
+        ValidationUtil.isNull(oldRole.getId(), "Role", "id", role.getId());
+        Role role1 = roleRepository.findByName(role.getName());
+        if (role1 != null && !role1.getId().equals(role.getId())) {
+            throw new EntityExistException(Role.class, "name", role.getName());
+        }
+        oldRole.setName(role.getName());
+        oldRole.setDescription(role.getDescription());
+        oldRole.setDataScope(role.getDataScope());
+        oldRole.setDepts(role.getDepts());
+        oldRole.setLevel(role.getLevel());
+        roleRepository.save(oldRole);
+        delCaches(role.getId(), null);
+    }
+
+    @Override
+    public void updateMenu(Role resources, RoleDto roleDto) {
+        Role role = roleMapper.toEntity(roleDto);
+        List<User> users = userRepository.findByRoleId(role.getId());
+        role.setMenus(resources.getMenus());
+        roleRepository.save(role);
+        delCaches(resources.getId(), users);
+    }
+
+    @Override
     public List<RoleDto> queryAll() {
         Sort sort = Sort.by(Sort.Direction.ASC, "level");
         return roleMapper.toDto(roleRepository.findAll(sort));
+    }
+
+    @Override
+    public Object queryAll(RoleQueryCriteria criteria, Pageable pageable) {
+        Page<Role> roles = roleRepository.findAll(((root, criteriaQuery, criteriaBuilder) -> QueryHelp.getPredicate(root, criteria, criteriaBuilder)), pageable);
+        return PageUtil.toPage(roles.map(roleMapper::toDto));
+    }
+
+    @Override
+    public List<RoleDto> queryAll(RoleQueryCriteria criteria) {
+        return roleMapper.toDto(roleRepository.findAll(((root, criteriaQuery, criteriaBuilder) -> QueryHelp.getPredicate(root, criteria, criteriaBuilder))));
     }
 
     @Override
@@ -94,6 +134,20 @@ public class RoleServiceImpl implements RoleService {
             roleDtoSet.add(findById(role.getId()));
         }
         return Collections.min(roleDtoSet.stream().map(RoleDto::getLevel).collect(Collectors.toList()));
+    }
+
+    @Override
+    public void download(List<RoleDto> roleDtoList, HttpServletResponse response) throws IOException {
+        List<Map<String, Object>> list = new ArrayList<>();
+        for (RoleDto roleDto : roleDtoList) {
+            Map<String, Object> map = new LinkedHashMap<>(4);
+            map.put("角色名称", roleDto.getName());
+            map.put("角色级别", roleDto.getLevel());
+            map.put("描述", roleDto.getDescription());
+            map.put("创建日期", roleDto.getCreateTime());
+            list.add(map);
+        }
+        FileUtil.downloadExcel(list, response);
     }
 
     @Override

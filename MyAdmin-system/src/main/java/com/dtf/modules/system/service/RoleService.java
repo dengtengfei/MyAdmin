@@ -5,6 +5,7 @@ import com.dtf.modules.system.service.dto.RoleDto;
 import com.dtf.modules.system.service.dto.RoleQueryCriteria;
 import com.dtf.modules.system.service.dto.RoleSmallDto;
 import com.dtf.modules.system.service.dto.UserDto;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.servlet.http.HttpServletResponse;
@@ -30,10 +31,47 @@ public interface RoleService {
      * @param ids 要删除的角色id
      */
     void delete(Set<Long> ids);
-//
-//    void update(Role role);
-//
-//    void updateMenu(Role role, RoleDto roleDto);
+
+    /**
+     * 修改角色
+     * @param role \
+     */
+    void update(Role role);
+
+    /**
+     * 更新角色的菜单
+     * @param role \
+     * @param roleDto \
+     */
+    void updateMenu(Role role, RoleDto roleDto);
+
+    /**
+     * 查询所有角色
+     * @return \
+     */
+    List<RoleDto> queryAll();
+
+    /**
+     * 分页根据条件查询全部
+     * @param criteria 条件
+     * @param pageable 分页
+     * @return \
+     */
+    Object queryAll(RoleQueryCriteria criteria, Pageable pageable);
+
+    /**
+     * 根据条件查询全部
+     * @param criteria 条件
+     * @return \
+     */
+    List<RoleDto> queryAll(RoleQueryCriteria criteria);
+
+    /**
+     * 根据 id 查询
+     * @param id \
+     * @return \
+     */
+    RoleDto findById(long id);
 
     /**
      * 根据用户id查询
@@ -50,25 +88,12 @@ public interface RoleService {
     Integer findByRoles(Set<Role> roles);
 
     /**
-     * 查询所有角色
-     * @return \
+     * 导出角色数据
+     * @param queryAll \
+     * @param response \
+     * @throws IOException \
      */
-    List<RoleDto> queryAll();
-
-    /**
-     * 根据 id 查询
-     * @param id \
-     * @return \
-     */
-    RoleDto findById(long id);
-//
-//    void untiedMenu(Long id);
-//
-//    Object queryAll(RoleQueryCriteria criteria, Pageable pageable);
-//
-//    List<RoleDto> queryAll(RoleQueryCriteria criteria);
-//
-//    void download(List<RoleDto> queryAll, HttpServletResponse response) throws IOException;
+    void download(List<RoleDto> queryAll, HttpServletResponse response) throws IOException;
 
     /**
      * 获取用户权限信息
@@ -82,6 +107,8 @@ public interface RoleService {
      * @param ids 角色id列表
      */
     void verification(Set<Long> ids);
+//
+//    void untiedMenu(Long id);
 //
 //    List<Role> findInMenuId(List<Long> menuIds);
 }
