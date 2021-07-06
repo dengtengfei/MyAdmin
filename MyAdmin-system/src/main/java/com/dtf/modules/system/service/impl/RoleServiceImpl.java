@@ -137,6 +137,11 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    public List<Role> findInMenuId(List<Long> menuIds) {
+        return roleRepository.findByMenuIdIn(menuIds);
+    }
+
+    @Override
     public void download(List<RoleDto> roleDtoList, HttpServletResponse response) throws IOException {
         List<Map<String, Object>> list = new ArrayList<>();
         for (RoleDto roleDto : roleDtoList) {
@@ -161,8 +166,8 @@ public class RoleServiceImpl implements RoleService {
         }
         Set<Role> roles = roleRepository.findByUserId(user.getId());
         permissions = roles.stream().flatMap(role -> role.getMenus().stream())
-                .filter(menu -> StringUtils.isNotBlank(menu.getPermission()))
-                .map(Menu::getPermission).collect(Collectors.toSet());
+                .map(Menu::getPermission)
+                .filter(StringUtils::isNotBlank).collect(Collectors.toSet());
         return permissions.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
     }
 
@@ -171,6 +176,11 @@ public class RoleServiceImpl implements RoleService {
         if (userRepository.countByRoleIds(ids) > 0) {
             throw new BadRequestException("所选角色存在关联的用户，请解除关联再试");
         }
+    }
+
+    @Override
+    public void untiedMenu(Long menuId) {
+        roleRepository.untiedMenu(menuId);
     }
 
     private void delCaches(Long id, List<User> users) {

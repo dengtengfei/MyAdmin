@@ -88,6 +88,13 @@ public interface RoleService {
     Integer findByRoles(Set<Role> roles);
 
     /**
+     * 根据菜单 id 查找角色列表
+     * @param menuIds
+     * @return
+     */
+    List<Role> findInMenuId(List<Long> menuIds);
+
+    /**
      * 导出角色数据
      * @param queryAll \
      * @param response \
@@ -107,8 +114,10 @@ public interface RoleService {
      * @param ids 角色id列表
      */
     void verification(Set<Long> ids);
-//
-//    void untiedMenu(Long id);
-//
-//    List<Role> findInMenuId(List<Long> menuIds);
+
+    /**
+     * 解除角色和菜单的关联
+      * @param id
+     */
+    void untiedMenu(Long id);
 }

@@ -27,8 +27,8 @@ import java.util.Set;
 public class Menu extends BaseEntity implements Serializable {
     @Id
     @Column(name = "menu_id")
-    @NotNull(groups = {Update.class})
-    @Null(groups = {Create.class})
+    @NotNull(groups = {Update.class}, message = "修改时id不能为空")
+    @Null(groups = {Create.class}, message = "创建时id必须为空")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ApiModelProperty(value = "ID", hidden = true)
     private Long id;

@@ -12,6 +12,7 @@ public interface CacheKey {
     String DICT_NAME = "dict::name:";
     String USER_ID = "user::id:";
     String MENU_USER = "menu::user:";
+    String MENU_ID = "menu::id:";
     String ROLE_AUTH = "role::auth:";
     String ROLE_ID = "role::id:";
 }
