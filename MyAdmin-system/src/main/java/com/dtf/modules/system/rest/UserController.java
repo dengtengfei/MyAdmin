@@ -4,7 +4,6 @@ import com.dtf.annotation.Log;
 import com.dtf.config.RsaProperties;
 import com.dtf.exception.BadRequestException;
 import com.dtf.modules.system.domain.Dept;
-import com.dtf.modules.system.domain.Role;
 import com.dtf.modules.system.domain.User;
 import com.dtf.modules.system.domain.vo.UserPassVo;
 import com.dtf.modules.system.service.*;

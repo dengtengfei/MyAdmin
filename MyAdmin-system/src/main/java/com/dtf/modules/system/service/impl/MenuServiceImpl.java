@@ -22,8 +22,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -133,6 +134,18 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
+    public Menu findOne(long id) {
+        Menu menu = menuRepository.findById(id).orElseGet(Menu::new);
+        ValidationUtil.isNull(menu.getId(), "Menu", "id", id);
+        return menu;
+    }
+
+    @Override
+    public MenuDto findById(long id) {
+        return menuMapper.toDto(findOne(id));
+    }
+
+    @Override
     public List<MenuDto> findByUser(Long userId) {
         List<RoleSmallDto> roles = roleService.findByUsersId(userId);
         Set<Long> roleIds = roles.stream().map(RoleSmallDto::getId).collect(Collectors.toSet());
@@ -146,11 +159,31 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
-    public Set<Menu> getChildrenMenu(Set<Menu> menuSet) {
-        for (Menu menu : menuSet) {
-            Set<Menu> menus = menuRepository.findByPid(menu.getId());
+    public List<MenuDto> getMenus(Long pid) {
+        if (pid != null && !pid.equals(0L)) {
+            return menuMapper.toDto(new ArrayList<>(menuRepository.findByPid(pid)));
+        } else {
+            return menuMapper.toDto(menuRepository.findByPidIsNull());
+        }
+    }
+
+    @Override
+    public List<MenuDto> getSuperior(MenuDto menuDto, List<Menu> menus) {
+        if (menuDto == null) {
+            menus.addAll(menuRepository.findByPidIsNull());
+            return menuMapper.toDto(menus);
+        }
+        menus.addAll(menuRepository.findByPid(menuDto.getPid()));
+        return getSuperior(findById(menuDto.getPid()), menus);
+    }
+
+    @Override
+    public Set<Menu> getChildrenMenu(List<Menu> menuList, Set<Menu> menuSet) {
+        for (Menu menu : menuList) {
+            menuSet.add(menu);
+            List<Menu> menus = menuRepository.findByPid(menu.getId());
             if (CollectionUtil.isNotEmpty(menus)) {
-                menuSet.addAll(getChildrenMenu(menus));
+                getChildrenMenu(menus, menuSet);
             }
         }
         return menuSet;
@@ -230,6 +263,23 @@ public class MenuServiceImpl implements MenuService {
             }
         });
         return list;
+    }
+
+    @Override
+    public void download(List<MenuDto> menuDtoList, HttpServletResponse response) throws IOException {
+        List<Map<String, Object>> list = new ArrayList<>();
+        for (MenuDto menuDto : menuDtoList) {
+            Map<String, Object> map = new LinkedHashMap<>();
+            map.put("菜单标题", menuDto.getTitle());
+            map.put("菜单类型", menuDto.getType() == null ? "目录" : menuDto.getType() == 1 ? "菜单" : "按钮");
+            map.put("权限标识", menuDto.getPermission());
+            map.put("外链菜单", menuDto.getIFrame() ? "是" : "否");
+            map.put("菜单可见", menuDto.getHidden() ? "是" : "否");
+            map.put("是否缓存", menuDto.getCache() ? "是" : "否");
+            map.put("创建日期", menuDto.getCreateTime());
+            list.add(map);
+        }
+        FileUtil.downloadExcel(list, response);
     }
 
     private void updateSubCnt(Long id) {

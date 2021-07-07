@@ -24,5 +24,5 @@ public class MenuQueryCriteria {
     private Boolean pidIsNull;
 
     @Query
-    private List pid;
+    private Long pid;
 }
