@@ -22,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -46,6 +47,7 @@ public class MenuServiceImpl implements MenuService {
     private final RedisUtils redisUtils;
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void create(Menu menu) {
         if (menuRepository.findByTitle(menu.getTitle()) != null) {
             throw new EntityExistException(Menu.class, "title", menu.getTitle());
@@ -63,6 +65,7 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void delete(Set<Menu> menus) {
         for (Menu menu : menus) {
             delCaches(menu.getId());
@@ -73,6 +76,7 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void update(Menu menu) {
         if (menu.getId().equals(menu.getPid())) {
             throw new BadRequestException("上级菜单不能为自己");

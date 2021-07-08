@@ -8,6 +8,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -24,7 +25,8 @@ import java.util.Objects;
 public class Job extends BaseEntity implements Serializable {
     @Id
     @Column(name = "job_id")
-    @NotNull(groups = Update.class)
+    @NotNull(groups = {Update.class}, message = "修改时id不能为空")
+    @Null(groups = {Create.class}, message = "创建时id必须为空")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ApiModelProperty(value = "ID", hidden = true)
     private Long id;
