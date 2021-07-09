@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
  * 3 * @Date:  2021/6/25 23:51
  */
 @Service(value = "dtf")
-public class ElPermissionConfig {
+public class PermissionConfig {
     public Boolean check(String ... permissions) {
         List<String> elPermissions = SecurityUtils.getCurrentUser().getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
         // 判断当前用户的所有权限是否包含接口上定义的权限

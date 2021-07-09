@@ -39,6 +39,7 @@ public class DataServiceImpl implements DataService {
             DataScopeEnum dataScopeEnum = DataScopeEnum.find(role.getDataScope());
             switch (Objects.requireNonNull(dataScopeEnum)) {
                 case THIS_LEVEL:
+                    deptIds.add(user.getDept().getId());
                     break;
                 case CUSTOMIZE:
                     deptIds.addAll(getCustomize(deptIds, role));

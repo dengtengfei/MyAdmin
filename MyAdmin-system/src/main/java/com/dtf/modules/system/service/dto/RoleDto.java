@@ -19,9 +19,13 @@ import java.util.Set;
 public class RoleDto extends BaseDTO implements Serializable {
     private Long id;
 
-    private Set<MenuDto> menuList;
+    private Set<MenuDto> menus;
 
-    private Set<DeptDto> deptList;
+    // TODO 前端修改名称
+    /**
+     * \
+     */
+    private Set<DeptDto> depts;
 
     private String name;
 

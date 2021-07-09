@@ -8,6 +8,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import java.io.Serializable;
 import java.util.List;
 
@@ -24,7 +25,8 @@ import java.util.List;
 public class Dict extends BaseEntity implements Serializable {
     @Id
     @Column(name = "dict_id")
-    @NotNull
+    @NotNull(groups = {Update.class}, message = "修改时id不能为空")
+    @Null(groups = {Create.class}, message = "创建时id必须为空")
     @ApiModelProperty(value = "字典", hidden = true)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

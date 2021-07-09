@@ -149,7 +149,7 @@ public class UserController {
             criteria.getDeptIds().addAll(deptService.getDeptChildren(deptChildren));
         }
         List<Long> datScopes = dataService.getDeptIds(userService.findByName(SecurityUtils.getCurrentUsername()));
-        if (!CollectionUtils.isEmpty(criteria.getDeptIds()) && CollectionUtils.isEmpty(datScopes)) {
+        if (!CollectionUtils.isEmpty(criteria.getDeptIds()) && !CollectionUtils.isEmpty(datScopes)) {
             criteria.getDeptIds().retainAll(datScopes);
             if (!CollectionUtils.isEmpty(criteria.getDeptIds())) {
                 return new ResponseEntity<>(userService.queryAll(criteria, pageable), HttpStatus.OK);

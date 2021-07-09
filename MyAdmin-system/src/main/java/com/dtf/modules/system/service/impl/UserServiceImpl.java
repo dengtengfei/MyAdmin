@@ -50,6 +50,7 @@ public class UserServiceImpl implements UserService {
     private final OnlineUserService onlineUserService;
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void create(User user) {
         if (userRepository.findByUsername(user.getUsername()) != null) {
             throw new EntityExistException(User.class, "username", user.getUsername());
@@ -141,6 +142,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Map<String, String> updateAvatar(MultipartFile multipartFile) {
         FileUtil.checkSize(properties.getAvatarMaxSize(), multipartFile.getSize());
 

@@ -55,6 +55,7 @@ public class DeptServiceImpl implements DeptService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void delete(Set<DeptDto> deptDtoSet) {
         for (DeptDto deptDto : deptDtoSet) {
             delCaches(deptDto.getId());
@@ -64,6 +65,7 @@ public class DeptServiceImpl implements DeptService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void update(Dept dept) {
         Dept oldDept = deptRepository.findById(dept.getId()).orElseGet(Dept::new);
         Long oldPid = oldDept.getPid();
@@ -165,7 +167,7 @@ public class DeptServiceImpl implements DeptService {
         List<Long> list = new ArrayList<>();
         deptList.forEach(dept -> {
             if (dept != null && dept.getEnabled()) {
-                List<Dept> deptChildren = deptRepository.findByPid(dept.getPid());
+                List<Dept> deptChildren = deptRepository.findByPid(dept.getId());
                 if (deptChildren.size() != 0) {
                     list.addAll(getDeptChildren(deptChildren));
                 }

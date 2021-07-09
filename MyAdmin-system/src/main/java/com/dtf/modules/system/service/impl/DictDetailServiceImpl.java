@@ -36,16 +36,18 @@ public class DictDetailServiceImpl implements DictDetailService {
     private final RedisUtils redisUtils;
 
     @Override
-    public Map<String, Object> queryAll(DictDetailQueryCriteria criteria, Pageable pageable) {
-        Page<DictDetail> page = dictDetailRepository.findAll((root, criteriaQuery, criteriaBuilder) -> QueryHelp.getPredicate(root, criteria, criteriaBuilder), pageable);
-        return PageUtil.toPage(page.map(dictDetailMapper::toDto));
-    }
-
-    @Override
     @Transactional(rollbackFor = Exception.class)
     public void create(DictDetail dictDetail) {
         dictDetailRepository.save(dictDetail);
         delCaches(dictDetail);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void delete(Long id) {
+        DictDetail dictDetail = dictDetailRepository.findById(id).orElseGet(DictDetail::new);
+        delCaches(dictDetail);
+        dictDetailRepository.deleteById(id);
     }
 
     @Override
@@ -60,17 +62,15 @@ public class DictDetailServiceImpl implements DictDetailService {
     }
 
     @Override
-    @Cacheable(key = "'name:' + #p0")
-    public List<DictDetailDto> getDictByName(String name) {
-        return dictDetailMapper.toDto(dictDetailRepository.findByDictName(name));
+    public Map<String, Object> queryAll(DictDetailQueryCriteria criteria, Pageable pageable) {
+        Page<DictDetail> page = dictDetailRepository.findAll((root, criteriaQuery, criteriaBuilder) -> QueryHelp.getPredicate(root, criteria, criteriaBuilder), pageable);
+        return PageUtil.toPage(page.map(dictDetailMapper::toDto));
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void delete(Long id) {
-        DictDetail dictDetail = dictDetailRepository.findById(id).orElseGet(DictDetail::new);
-        delCaches(dictDetail);
-        dictDetailRepository.deleteById(id);
+    @Cacheable(key = "'name:' + #p0")
+    public List<DictDetailDto> getDictByName(String name) {
+        return dictDetailMapper.toDto(dictDetailRepository.findByDictName(name));
     }
 
     private void delCaches(DictDetail dictDetail) {

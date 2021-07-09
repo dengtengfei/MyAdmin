@@ -87,6 +87,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void updateMenu(Role resources, RoleDto roleDto) {
         Role role = roleMapper.toEntity(roleDto);
         List<User> users = userRepository.findByRoleId(role.getId());
@@ -179,6 +180,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void untiedMenu(Long menuId) {
         roleRepository.untiedMenu(menuId);
     }

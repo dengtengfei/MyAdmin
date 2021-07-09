@@ -22,16 +22,16 @@ public interface DictDetailService {
     void create(DictDetail dictDetail);
 
     /**
-     * 更新
-     * @param dictDetail \
-     */
-    void update(DictDetail dictDetail);
-
-    /**
      * 删除
      * @param id \
      */
     void delete(Long id);
+
+    /**
+     * 更新
+     * @param dictDetail \
+     */
+    void update(DictDetail dictDetail);
 
     /**
      * 查询全部
