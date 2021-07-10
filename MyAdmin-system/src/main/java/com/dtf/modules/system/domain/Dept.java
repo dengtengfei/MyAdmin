@@ -27,8 +27,8 @@ import java.util.Set;
 public class Dept extends BaseEntity implements Serializable {
     @Id
     @Column(name = "dept_id")
-    @NotNull(groups = {Update.class}, message = "修改时id不能为空")
     @Null(groups = {Create.class}, message = "创建时id必须为空")
+    @NotNull(groups = {Update.class}, message = "修改时id不能为空")
     @ApiModelProperty(value = "ID", hidden = true)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

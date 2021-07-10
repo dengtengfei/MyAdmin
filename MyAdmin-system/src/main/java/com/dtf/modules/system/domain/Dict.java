@@ -25,8 +25,8 @@ import java.util.List;
 public class Dict extends BaseEntity implements Serializable {
     @Id
     @Column(name = "dict_id")
-    @NotNull(groups = {Update.class}, message = "修改时id不能为空")
     @Null(groups = {Create.class}, message = "创建时id必须为空")
+    @NotNull(groups = {Update.class}, message = "修改时id不能为空")
     @ApiModelProperty(value = "字典", hidden = true)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
