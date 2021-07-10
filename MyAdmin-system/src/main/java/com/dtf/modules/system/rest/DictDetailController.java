@@ -1,5 +1,7 @@
 package com.dtf.modules.system.rest;
 
+import com.dtf.annotation.Log;
+import com.dtf.modules.system.domain.DictDetail;
 import com.dtf.modules.system.service.DictDetailService;
 import com.dtf.modules.system.service.dto.DictDetailDto;
 import com.dtf.modules.system.service.dto.DictDetailQueryCriteria;
@@ -11,10 +13,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -32,7 +33,33 @@ import java.util.Map;
 @RequestMapping("/api/dictDetail")
 public class DictDetailController {
     private final DictDetailService dictDetailService;
-    private static final String ENTITY_NAME = "diceDetail";
+
+    @Log("新增字典详情")
+    @ApiOperation("新增字典详情")
+    @PostMapping
+    @PreAuthorize("@dtf.check('dict:add')")
+    public ResponseEntity<Object> create(@Validated(DictDetail.Create.class) @RequestBody DictDetail dictDetail) {
+        dictDetailService.create(dictDetail);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Log("删除字典详情")
+    @ApiOperation("删除字典详情")
+    @DeleteMapping(value = "/{id}")
+    @PreAuthorize("@dtf.check('dict:del')")
+    public ResponseEntity<Object> delete(@PathVariable Long id) {
+        dictDetailService.delete(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Log("修改字典详情")
+    @ApiOperation("修改字典详情")
+    @PutMapping
+    @PreAuthorize("@dtf.check('dict:eidt')")
+    public ResponseEntity<Object> update(@Validated(DictDetail.Update.class) @RequestBody DictDetail dictDetail) {
+        dictDetailService.update(dictDetail);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
     @ApiOperation("查询字典详情")
     @GetMapping

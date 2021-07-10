@@ -53,7 +53,6 @@ public class DictDetailServiceImpl implements DictDetailService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void update(DictDetail dictDetail) {
-        // TODO 没明白如何更新的
         DictDetail oldDictDetail = dictDetailRepository.findById(dictDetail.getId()).orElseGet(DictDetail::new);
         ValidationUtil.isNull(oldDictDetail.getId(), "DictDetail", "id", dictDetail.getId());
         dictDetail.setId(oldDictDetail.getId());

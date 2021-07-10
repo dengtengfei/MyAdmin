@@ -34,11 +34,6 @@ import java.util.*;
 public class DeptController {
     private final DeptService deptService;
 
-    /**
-     * 部门
-     */
-    private static final String ENTITY_NAME = "dept";
-
     @Log("新增部门")
     @ApiOperation("新增部门")
     @PostMapping

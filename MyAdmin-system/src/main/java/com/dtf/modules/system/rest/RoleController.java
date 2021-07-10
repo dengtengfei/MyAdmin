@@ -38,7 +38,6 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/roles")
 public class RoleController {
     private final RoleService roleService;
-    private static final String ENTITY_NAME = "role";
 
     @Log("新增角色")
     @ApiOperation("新增角色")
