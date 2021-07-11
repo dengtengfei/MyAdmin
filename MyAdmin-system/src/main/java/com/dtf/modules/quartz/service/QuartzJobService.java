@@ -1,6 +1,7 @@
 package com.dtf.modules.quartz.service;
 
 import com.dtf.modules.quartz.domain.QuartzJob;
+import com.dtf.modules.quartz.domain.QuartzLog;
 import com.dtf.modules.quartz.service.dto.JobsQueryCriteria;
 import org.springframework.data.domain.Pageable;
 
@@ -70,6 +71,23 @@ public interface QuartzJobService {
     Object queryAll(JobsQueryCriteria criteria, Pageable pageable);
 
     /**
+     * 查询全部定时任务日志
+     *
+     * @param criteria \
+     * @return \
+     */
+    List<QuartzLog> queryAllLog(JobsQueryCriteria criteria);
+
+    /**
+     * 查询全部定时任务日志
+     *
+     * @param criteria \
+     * @param pageable \
+     * @return \
+     */
+    Object queryAllLog(JobsQueryCriteria criteria, Pageable pageable);
+
+    /**
      * 导出定时任务数据
      *
      * @param quartzJobList \
@@ -77,6 +95,15 @@ public interface QuartzJobService {
      * @throws IOException \
      */
     void download(List<QuartzJob> quartzJobList, HttpServletResponse response) throws IOException;
+
+    /**
+     * 导出定时任务数据
+     *
+     * @param quartzLogs \
+     * @param response      \
+     * @throws IOException \
+     */
+    void downloadLog(List<QuartzLog> quartzLogs, HttpServletResponse response) throws IOException;
 
     /**
      * 执行任务

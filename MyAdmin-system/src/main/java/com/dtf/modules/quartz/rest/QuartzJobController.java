@@ -76,11 +76,25 @@ public class QuartzJobController {
         return new ResponseEntity<>(quartzJobService.queryAll(criteria, pageable), HttpStatus.OK);
     }
 
+    @ApiOperation("查询任务执行日志")
+    @GetMapping(value = "/logs")
+    @PreAuthorize("@dtf.check('timing:list')")
+    public ResponseEntity<Object> queryLog(JobsQueryCriteria criteria, Pageable pageable) {
+        return new ResponseEntity<>(quartzJobService.queryAllLog(criteria, pageable), HttpStatus.OK);
+    }
+
     @ApiModelProperty("导出定时任务数据")
     @GetMapping(value = "/download")
     @PreAuthorize("@dtf.check('timing:list')")
     public void download(HttpServletResponse response, JobsQueryCriteria criteria) throws IOException {
         quartzJobService.download(quartzJobService.queryAll(criteria), response);
+    }
+
+    @ApiModelProperty("导出任务日志数据")
+    @GetMapping(value = "/logs/download")
+    @PreAuthorize("@dtf.check('timing:list')")
+    public void downloadLog(HttpServletResponse response, JobsQueryCriteria criteria) throws IOException {
+        quartzJobService.downloadLog(quartzJobService.queryAllLog(criteria), response);
     }
 
     @Log("执行定时任务")

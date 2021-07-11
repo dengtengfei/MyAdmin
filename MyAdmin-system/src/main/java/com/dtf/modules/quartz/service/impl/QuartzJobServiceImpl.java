@@ -3,6 +3,7 @@ package com.dtf.modules.quartz.service.impl;
 import cn.hutool.core.util.IdUtil;
 import com.dtf.exception.BadRequestException;
 import com.dtf.modules.quartz.domain.QuartzJob;
+import com.dtf.modules.quartz.domain.QuartzLog;
 import com.dtf.modules.quartz.repository.QuartzJobRepository;
 import com.dtf.modules.quartz.repository.QuartzLogRepository;
 import com.dtf.modules.quartz.service.QuartzJobService;
@@ -99,6 +100,16 @@ public class QuartzJobServiceImpl implements QuartzJobService {
     }
 
     @Override
+    public List<QuartzLog> queryAllLog(JobsQueryCriteria criteria) {
+        return quartzLogRepository.findAll(((root, criteriaQuery, criteriaBuilder) -> QueryHelp.getPredicate(root, criteria, criteriaBuilder)));
+    }
+
+    @Override
+    public Object queryAllLog(JobsQueryCriteria criteria, Pageable pageable) {
+        return PageUtil.toPage(quartzLogRepository.findAll(((root, criteriaQuery, criteriaBuilder) -> QueryHelp.getPredicate(root, criteria, criteriaBuilder)), pageable));
+    }
+
+    @Override
     public void download(List<QuartzJob> quartzJobList, HttpServletResponse response) throws IOException {
         List<Map<String, Object>> list = new ArrayList<>();
         for (QuartzJob quartzJob : quartzJobList) {
@@ -111,6 +122,25 @@ public class QuartzJobServiceImpl implements QuartzJobService {
             map.put("状态", quartzJob.getIsPause() ? "暂停中" : "运行中");
             map.put("描述", quartzJob.getDescription());
             map.put("创建日期", quartzJob.getCreateTime());
+            list.add(map);
+        }
+        FileUtil.downloadExcel(list, response);
+    }
+
+    @Override
+    public void downloadLog(List<QuartzLog> quartzLogs, HttpServletResponse response) throws IOException {
+        List<Map<String, Object>> list = new ArrayList<>();
+        for (QuartzLog quartzLog : quartzLogs) {
+            Map<String, Object> map = new LinkedHashMap<>();
+            map.put("状态", quartzLog.getIsSuccess() ? "成功" : "失败");
+            map.put("任务名称", quartzLog.getJobName());
+            map.put("Bean名称", quartzLog.getBeanName());
+            map.put("执行方法", quartzLog.getMethodName());
+            map.put("参数", quartzLog.getParams());
+            map.put("表达式", quartzLog.getCronExpression());
+            map.put("异常详情", quartzLog.getExceptionDetail());
+            map.put("执行耗时/s", quartzLog.getTime());
+            map.put("创建日期", quartzLog.getCreateTime());
             list.add(map);
         }
         FileUtil.downloadExcel(list, response);
