@@ -73,7 +73,7 @@ public class OnlineUserService {
     public void kickOutForUsername(String username) throws Exception {
         List<OnlineUserDto> onlineUserDtoList = getAll(username);
         for (OnlineUserDto onlineUserDto : onlineUserDtoList) {
-            if (onlineUserDto.getUsername().equals(username)) {
+            if (onlineUserDto.getUserName().equals(username)) {
                 String token = EncryptUtils.desDecrypt(onlineUserDto.getKey());
                 kickOut(token);
             }
@@ -98,7 +98,7 @@ public class OnlineUserService {
         List<Map<String, Object>> list = new ArrayList<>();
         for (OnlineUserDto user : all) {
             Map<String, Object> map = new LinkedHashMap<>(6);
-            map.put("用户名", user.getUsername());
+            map.put("用户名", user.getUserName());
             map.put("部门", user.getDept());
             map.put("登录IP", user.getIp());
             map.put("登录地点", user.getAddress());
@@ -119,7 +119,7 @@ public class OnlineUserService {
             return;
         }
         for (OnlineUserDto onlineUserDto : onlineUserDtoList) {
-            if (onlineUserDto.getUsername().equals(username)) {
+            if (onlineUserDto.getUserName().equals(username)) {
                 try {
                     String token = EncryptUtils.desDecrypt(onlineUserDto.getKey());
                     if (StringUtils.isNotBlank(ignoreToken) && !ignoreToken.equals(token)) {

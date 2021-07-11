@@ -16,12 +16,12 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class OnlineUserDto implements Serializable {
+public class OnlineUserDto {
     // TODO Serializable ?
     /**
      *
      */
-    private String username;
+    private String userName;
 
     private String nickName;
 
