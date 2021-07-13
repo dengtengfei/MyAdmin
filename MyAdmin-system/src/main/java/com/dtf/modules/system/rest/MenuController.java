@@ -42,7 +42,7 @@ public class MenuController {
     @PreAuthorize("@dtf.check('menu:add')")
     public ResponseEntity<Object> create(@Validated(Menu.Create.class) @RequestBody Menu menu) {
         menuService.create(menu);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @Log("删除菜单")
@@ -67,7 +67,7 @@ public class MenuController {
     @PreAuthorize("@dtf.check('menu:edit')")
     public ResponseEntity<Object> update(@Validated(Menu.Update.class) @RequestBody Menu menu) {
         menuService.update(menu);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping

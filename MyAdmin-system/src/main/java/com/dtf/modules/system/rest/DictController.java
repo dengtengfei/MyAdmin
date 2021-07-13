@@ -37,7 +37,7 @@ public class DictController {
     @PreAuthorize("@dtf.check('dict:add')")
     public ResponseEntity<Object> create(@Validated(Dict.Create.class) @RequestBody Dict dict) {
         dictService.create(dict);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @Log("删除字典")
@@ -55,7 +55,7 @@ public class DictController {
     @PreAuthorize("@dtf.check('dict:edit')")
     public ResponseEntity<Object> update(@Validated(Dict.Update.class) @RequestBody Dict dict) {
         dictService.update(dict);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @ApiOperation("查询字典")

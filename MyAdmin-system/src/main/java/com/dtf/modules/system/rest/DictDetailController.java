@@ -40,7 +40,7 @@ public class DictDetailController {
     @PreAuthorize("@dtf.check('dict:add')")
     public ResponseEntity<Object> create(@Validated(DictDetail.Create.class) @RequestBody DictDetail dictDetail) {
         dictDetailService.create(dictDetail);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @Log("删除字典详情")
@@ -58,7 +58,7 @@ public class DictDetailController {
     @PreAuthorize("@dtf.check('dict:eidt')")
     public ResponseEntity<Object> update(@Validated(DictDetail.Update.class) @RequestBody DictDetail dictDetail) {
         dictDetailService.update(dictDetail);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @ApiOperation("查询字典详情")

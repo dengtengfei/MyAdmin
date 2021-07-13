@@ -87,7 +87,7 @@ public class UserController {
     public ResponseEntity<Object> update(@Validated(User.Update.class) @RequestBody User user) throws Exception {
         checkLevel(user);
         userService.update(user);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @Log("修改用户，个人中心")
@@ -115,7 +115,7 @@ public class UserController {
             throw new BadRequestException("新密码不能与旧密码相同");
         }
         userService.updatePass(userDto.getUsername(), passwordEncoder.encode(newPass));
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @Log("修改邮箱")
@@ -129,14 +129,14 @@ public class UserController {
         }
         verifyService.validated(CodeEnum.EMAIL_RESET_EMAIL_CODE.getKey() + user.getEmail(), code);
         userService.updateEmail(userDto.getUsername(), user.getEmail());
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @Log("修改头像")
     @ApiOperation("修改头像")
     @PostMapping(value = "/updateAvatar")
     public ResponseEntity<Object> updateAvatar(@RequestParam MultipartFile avatar) {
-        return new ResponseEntity<>(userService.updateAvatar(avatar), HttpStatus.OK);
+        return new ResponseEntity<>(userService.updateAvatar(avatar), HttpStatus.NO_CONTENT);
     }
 
     @ApiOperation("查询用户")

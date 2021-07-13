@@ -67,7 +67,7 @@ public class DeptController {
     @PreAuthorize("@dtf.check('dept:edit')")
     public ResponseEntity<Object> update(@Validated(BaseEntity.Update.class) @RequestBody Dept dept) {
         deptService.update(dept);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @ApiOperation("查询部门")

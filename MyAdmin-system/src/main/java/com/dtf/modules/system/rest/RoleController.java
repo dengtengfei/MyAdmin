@@ -46,7 +46,7 @@ public class RoleController {
     public ResponseEntity<Object> create(@Validated(Role.Create.class) @RequestBody Role role) {
         getLevels(role.getLevel());
         roleService.create(role);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @Log("删除角色")
@@ -71,7 +71,7 @@ public class RoleController {
     public ResponseEntity<Object> update(@Validated(Role.Update.class) @RequestBody Role role) {
         getLevels(role.getLevel());
         roleService.update(role);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @Log("修改角色菜单")
@@ -82,7 +82,7 @@ public class RoleController {
         RoleDto roleDto = roleService.findById(role.getId());
         getLevels(roleDto.getLevel());
         roleService.updateMenu(role, roleDto);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @ApiOperation("查询全部角色")

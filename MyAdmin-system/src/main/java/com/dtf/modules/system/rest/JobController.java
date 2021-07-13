@@ -37,7 +37,7 @@ public class JobController {
     @PreAuthorize("@dtf.check('job:add')")
     public ResponseEntity<Object> create(@Validated(Job.Create.class) @RequestBody Job job) {
         jobService.create(job);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @Log("删除岗位")
@@ -56,7 +56,7 @@ public class JobController {
     @PreAuthorize("@dtf.check('job:edit')")
     public ResponseEntity<Object> update(@Validated(Job.Update.class) @RequestBody Job job) {
         jobService.update(job);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping

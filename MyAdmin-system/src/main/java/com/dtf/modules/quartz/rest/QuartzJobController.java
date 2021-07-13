@@ -39,7 +39,7 @@ public class QuartzJobController {
     @PreAuthorize("@dtf.check('timing:add')")
     public ResponseEntity<Object> create(@Validated(QuartzJob.Create.class) @RequestBody QuartzJob quartzJob) {
         quartzJobService.create(quartzJob);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @Log("删除定时任务")
@@ -57,7 +57,7 @@ public class QuartzJobController {
     @PreAuthorize("@dtf.check('timing:edit')")
     public ResponseEntity<Object> update(@Validated(QuartzJob.Update.class) @RequestBody QuartzJob quartzJob) {
         quartzJobService.update(quartzJob);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @Log("更改定时任务状态")
@@ -66,7 +66,7 @@ public class QuartzJobController {
     @PreAuthorize("@dtf.check('timing:del')")
     public ResponseEntity<Object> update(@PathVariable Long id) {
         quartzJobService.updateIsPause(quartzJobService.findById(id));
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @ApiOperation("查询定时任务")
