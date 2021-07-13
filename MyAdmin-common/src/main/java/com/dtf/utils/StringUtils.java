@@ -14,7 +14,9 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.net.UnknownHostException;
+import java.util.Enumeration;
 
 /**
  * 0 *
@@ -61,6 +63,41 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils{
             }
         }
         return ip;
+    }
+
+    public static String getLocalIp() {
+        try {
+            InetAddress candidateAddress = null;
+            // 遍历所有的网络接口
+            for (Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces(); interfaces.hasMoreElements();) {
+                NetworkInterface anInterface = interfaces.nextElement();
+                // 在所有的接口下再遍历IP
+                for (Enumeration<InetAddress> inetAddresses = anInterface.getInetAddresses(); inetAddresses.hasMoreElements();) {
+                    InetAddress inetAddress = inetAddresses.nextElement();
+                    // 排除loopback类型地址
+                    if (!inetAddress.isLoopbackAddress()) {
+                        if (inetAddress.isSiteLocalAddress()) {
+                            // 如果是site-local地址，就是它了
+                            return inetAddress.getHostAddress();
+                        } else if (candidateAddress == null) {
+                            // site-local类型的地址未被发现，先记录候选地址
+                            candidateAddress = inetAddress;
+                        }
+                    }
+                }
+            }
+            if (candidateAddress != null) {
+                return candidateAddress.getHostAddress();
+            }
+            // 如果没有发现 non-loopback地址.只能用最次选的方案
+            InetAddress jdkSuppliedAddress = InetAddress.getLocalHost();
+            if (jdkSuppliedAddress == null) {
+                return "";
+            }
+            return jdkSuppliedAddress.getHostAddress();
+        } catch (Exception e) {
+            return "";
+        }
     }
 
     public static String getCityInfo(String ip) {

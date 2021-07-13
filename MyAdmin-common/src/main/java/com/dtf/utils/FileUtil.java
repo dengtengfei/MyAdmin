@@ -73,8 +73,8 @@ public class FileUtil extends cn.hutool.core.io.FileUtil {
     /**
      * 扩展名
      *
-     * @param filename
-     * @return
+     * @param filename \
+     * @return \
      */
     public static String getExtensionName(String filename) {
         if (StringUtils.isNoneBlank(filename)) {
@@ -105,7 +105,7 @@ public class FileUtil extends cn.hutool.core.io.FileUtil {
         sheet.trackAllColumnsForAutoSizing();
         writer.autoSizeColumnAll();
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheel;charset=utf-8");
-        response.setHeader("Content-Dissposition", "attachment;filename=file.xlsx");
+        response.setHeader("Content-Disposition", "attachment;filename=file.xlsx");
         ServletOutputStream outputStream = response.getOutputStream();
         file.deleteOnExit();
         writer.flush(outputStream, true);
@@ -117,6 +117,20 @@ public class FileUtil extends cn.hutool.core.io.FileUtil {
         if (size > (maxSize * m)) {
             throw new BadRequestException("文件大小不能超过: " + maxSize + "MB.");
         }
+    }
+
+    public static String getSize(long size) {
+        String result;
+        if (size / GB >= 1) {
+            result = DF.format(size / (float) GB) + "GB   ";
+        } else if (size / MB >= 1) {
+            result = DF.format(size / (float) MB) + "MB   ";
+        } else if (size / KB >= 1) {
+            result = DF.format(size / (float) KB) + "KB   ";
+        } else {
+            result = size + "B   ";
+        }
+        return result;
     }
 
     public static File upload(MultipartFile file, String filePath) {
