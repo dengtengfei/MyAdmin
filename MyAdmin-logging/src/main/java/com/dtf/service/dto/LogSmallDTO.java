@@ -14,7 +14,7 @@ import java.sql.Timestamp;
 public class LogSmallDTO {
     private String description;
 
-    private String requestIP;
+    private String requestIp;
 
     private Long time;
 

@@ -68,7 +68,7 @@ public class LogController {
     @PreAuthorize("@dtf.check()")
     public ResponseEntity<Object> queryErrorLog(LogQueryCriteria criteria, Pageable pageable) {
         criteria.setLogType("ERROR");
-        return new ResponseEntity<>(logService.queryUserLog(criteria, pageable), HttpStatus.OK);
+        return new ResponseEntity<>(logService.queryAll(criteria, pageable), HttpStatus.OK);
     }
 
     @GetMapping("/error/{id}")
