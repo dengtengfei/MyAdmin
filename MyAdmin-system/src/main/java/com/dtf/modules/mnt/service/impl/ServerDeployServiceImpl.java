@@ -66,6 +66,12 @@ public class ServerDeployServiceImpl implements ServerDeployService {
     }
 
     @Override
+    public ServerDeployDto findByIp(String ip) {
+        // TODO ensure ip is identify
+        return serverDeployMapper.toDto(serverDeployRepository.findByIp(ip));
+    }
+
+    @Override
     public void download(List<ServerDeployDto> serverDeployDtoList, HttpServletResponse response) throws IOException {
         List<Map<String, Object>> list = new ArrayList<>();
         for (ServerDeployDto deployDto : serverDeployDtoList) {

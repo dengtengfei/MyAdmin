@@ -52,7 +52,7 @@ public class AppController {
     @Log("修改应用")
     @ApiOperation(value = "修改应用")
     @PutMapping
-    @PreAuthorize("@dtf.check('app:add')")
+    @PreAuthorize("@dtf.check('app:edit')")
     public ResponseEntity<Object> update(@Validated(App.Update.class) @RequestBody App app) {
         appService.update(app);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

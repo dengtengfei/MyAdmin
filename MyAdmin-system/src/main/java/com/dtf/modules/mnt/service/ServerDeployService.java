@@ -56,6 +56,13 @@ public interface ServerDeployService {
     List<ServerDeployDto> queryAll(ServerDeployQueryCriteria criteria);
 
     /**
+     * 根据ip查询
+     * @param ip \
+     * @return \
+     */
+    ServerDeployDto findByIp(String ip);
+
+    /**
      * 导出服务器数据
      *
      * @param serverDeployDtoList \

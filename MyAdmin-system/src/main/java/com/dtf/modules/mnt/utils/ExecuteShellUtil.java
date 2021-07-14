@@ -71,4 +71,13 @@ public class ExecuteShellUtil {
             session.disconnect();
         }
     }
+
+    public String executeForResult(String command) {
+        execute(command);
+        StringBuilder stringBuilder = new StringBuilder();
+        for (String str : stdout) {
+            stringBuilder.append(str);
+        }
+        return stringBuilder.toString();
+    }
 }
