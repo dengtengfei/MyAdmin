@@ -71,4 +71,12 @@ public class ServerDeployController {
     public void download(HttpServletResponse response, ServerDeployQueryCriteria criteria) throws IOException {
         serverDeployService.download(serverDeployService.queryAll(criteria), response);
     }
+
+    @Log("测试服务器连接")
+    @ApiOperation(value = "测试服务器连接")
+    @PostMapping("/testConnect")
+    @PreAuthorize("@dtf.check('serverDeploy:add')")
+    public ResponseEntity<Object> testConnect(@RequestBody ServerDeploy serverDeploy) {
+        return new ResponseEntity<>(serverDeployService.testConnect(serverDeploy), HttpStatus.OK);
+    }
 }

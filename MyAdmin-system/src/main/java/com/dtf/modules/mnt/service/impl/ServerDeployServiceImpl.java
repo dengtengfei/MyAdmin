@@ -6,6 +6,7 @@ import com.dtf.modules.mnt.service.ServerDeployService;
 import com.dtf.modules.mnt.service.dto.ServerDeployDto;
 import com.dtf.modules.mnt.service.dto.ServerDeployQueryCriteria;
 import com.dtf.modules.mnt.service.mapstruct.ServerDeployMapper;
+import com.dtf.modules.mnt.utils.ExecuteShellUtil;
 import com.dtf.utils.FileUtil;
 import com.dtf.utils.PageUtil;
 import com.dtf.utils.QueryHelp;
@@ -77,5 +78,20 @@ public class ServerDeployServiceImpl implements ServerDeployService {
             list.add(map);
         }
         FileUtil.downloadExcel(list, response);
+    }
+
+    @Override
+    public boolean testConnect(ServerDeploy serverDeploy) {
+        ExecuteShellUtil executeShellUtil = null;
+        try {
+            executeShellUtil = new ExecuteShellUtil(serverDeploy.getIp(), serverDeploy.getAccount(), serverDeploy.getPassword(), serverDeploy.getPort());
+            return executeShellUtil.execute("ls") == 0;
+        } catch (Exception e) {
+            return false;
+        } finally {
+            if (executeShellUtil != null) {
+                executeShellUtil.close();
+            }
+        }
     }
 }

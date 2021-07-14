@@ -63,4 +63,12 @@ public interface ServerDeployService {
      * @throws IOException \
      */
     void download(List<ServerDeployDto> serverDeployDtoList, HttpServletResponse response) throws IOException;
+
+    /**
+     * 测试服务器连接
+     *
+     * @param serverDeploy \
+     * @return \
+     */
+    boolean testConnect(ServerDeploy serverDeploy);
 }
