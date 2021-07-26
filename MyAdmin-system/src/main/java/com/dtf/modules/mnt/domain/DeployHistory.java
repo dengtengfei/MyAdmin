@@ -2,7 +2,6 @@ package com.dtf.modules.mnt.domain;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
-import com.dtf.base.BaseEntity;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,7 +20,7 @@ import java.sql.Timestamp;
 @Getter
 @Setter
 @Table(name = "mnt_deploy_history")
-public class DeployHistory extends BaseEntity implements Serializable {
+public class DeployHistory implements Serializable {
     @Id
     @Column(name = "history_id")
     @ApiModelProperty(value = "ID", hidden = true)
