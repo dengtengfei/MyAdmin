@@ -1,6 +1,7 @@
 package com.dtf.modules.mnt.service;
 
 import com.dtf.modules.mnt.domain.Deploy;
+import com.dtf.modules.mnt.domain.DeployHistory;
 import com.dtf.modules.mnt.service.dto.DeployDto;
 import com.dtf.modules.mnt.service.dto.DeployQueryCriteria;
 import org.springframework.data.domain.Pageable;
@@ -74,15 +75,40 @@ public interface DeployService {
 
     /**
      * 部署文件到服务器
+     *
      * @param fileSavePath \
-     * @param appId \
+     * @param id           \
      */
     void deploy(String fileSavePath, Long id);
 
+
     /**
-     * 发送部署结果
-     * @param result \
-     * @param stringBuilder \
+     * 启动服务器
+     *
+     * @param deploy \
+     * @return \
      */
-    void sendResultMsg(boolean result, StringBuilder stringBuilder);
+    String startServer(Deploy deploy);
+
+    /**
+     * 停止服务
+     *
+     * @param deploy \
+     * @return \
+     */
+    String stopServer(Deploy deploy);
+
+    /**
+     * 还原服务
+     * @param deployHistory \
+     * @return \
+     */
+    String serverReduction(DeployHistory deployHistory);
+
+    /**
+     * 查询部署状态
+     * @param deploy \
+     * @return \
+     */
+    String serverStatus(Deploy deploy);
 }
