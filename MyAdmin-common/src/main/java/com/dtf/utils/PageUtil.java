@@ -14,11 +14,11 @@ import java.util.Map;
  * 3 * @Date:  2021/6/13 1:39
  */
 public class PageUtil extends cn.hutool.core.util.PageUtil {
-    public static List toPage(int page, int size, List list) {
+    public static List<?> toPage(int page, int size, List<?> list) {
         int fromIndex = page * size;
         int toIndex = page * size + size;
         if (fromIndex > list.size()) {
-            return new ArrayList();
+            return new ArrayList<>();
         } else if (toIndex >= list.size()) {
             return list.subList(fromIndex, list.size());
         } else {
@@ -26,7 +26,7 @@ public class PageUtil extends cn.hutool.core.util.PageUtil {
         }
     }
 
-    public static Map<String, Object> toPage(Page page) {
+    public static Map<String, Object> toPage(Page<?> page) {
         Map<String, Object> map = new LinkedHashMap<>(2);
         map.put("content", page.getContent());
         map.put("totalElements", page.getTotalElements());
@@ -35,9 +35,9 @@ public class PageUtil extends cn.hutool.core.util.PageUtil {
 
     /**
      * 自定义分页
-     * @param object
-     * @param totalElements
-     * @return
+     * @param object \
+     * @param totalElements \
+     * @return \
      */
     public static Map<String, Object> toPage(Object object, Object totalElements) {
         Map<String, Object> map = new LinkedHashMap<>(2);
