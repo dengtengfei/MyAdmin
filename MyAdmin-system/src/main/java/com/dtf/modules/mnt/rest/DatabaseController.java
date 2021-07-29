@@ -1,9 +1,13 @@
 package com.dtf.modules.mnt.rest;
 
 import com.dtf.annotation.Log;
+import com.dtf.exception.BadRequestException;
 import com.dtf.modules.mnt.domain.Database;
 import com.dtf.modules.mnt.service.DatabaseService;
+import com.dtf.modules.mnt.service.dto.DatabaseDto;
 import com.dtf.modules.mnt.service.dto.DatabaseQueryCriteria;
+import com.dtf.modules.mnt.utils.SqlUtils;
+import com.dtf.utils.FileUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -13,9 +17,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -80,5 +88,23 @@ public class DatabaseController {
         return new ResponseEntity<>(databaseService.testConnection(database), HttpStatus.CREATED);
     }
 
-    // TODO 执行sql脚本
+    @Log("执行数据库脚本")
+    @ApiOperation("执行数据库脚本")
+    @PostMapping("/upload")
+    @PreAuthorize("@dtf.check('database:add')")
+    public ResponseEntity<Object> upload(@RequestBody MultipartFile file, HttpServletRequest request) throws IOException {
+        String id = request.getParameter("id");
+        DatabaseDto databaseDto = databaseService.findBydId(id);
+        String fileName;
+        if (databaseDto != null) {
+            fileName = file.getOriginalFilename();
+            File executeFile = new File(FileUtil.getTmpDirPath() + "/" + Objects.requireNonNull(fileName));
+            FileUtil.del(executeFile);
+            file.transferTo(executeFile);
+            String result = SqlUtils.executeFile(databaseDto.getJdbcUrl(), databaseDto.getUserName(), databaseDto.getPwd(), executeFile);
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } else {
+            throw new BadRequestException("Database not exist.");
+        }
+    }
 }

@@ -6,9 +6,14 @@ import com.dtf.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.DataSource;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 0 *
@@ -91,5 +96,58 @@ public class SqlUtils {
             CloseUtils.close(connection);
         }
         return false;
+    }
+
+    public static String executeFile(String jdbcUrl, String username, String pwd, File sqlFile) {
+        Connection connection = getConnection(jdbcUrl, username, pwd);
+        try {
+            batchExecute(connection, readSqlList(sqlFile));
+        } catch (Exception e) {
+            log.error("exec sql file error:{}", e.getMessage());
+            return e.getMessage();
+        } finally {
+            CloseUtils.close(connection);
+        }
+        return "success";
+    }
+
+    public static void batchExecute(Connection connection, List<String> sqlList) {
+        Statement statement = null;
+        try {
+            statement = connection.createStatement();
+            for (String sql : sqlList) {
+                if (sql.endsWith(";")) {
+                    sql = sql.substring(0, sql.length() - 1);
+                }
+                statement.addBatch(sql);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            CloseUtils.close(statement);
+        }
+    }
+
+    private static List<String> readSqlList(File sqlFile) throws IOException {
+        List<String> sqlList = new ArrayList<>();
+        StringBuilder stringBuilder = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(sqlFile), StandardCharsets.UTF_8))) {
+            String tmp;
+            while ((tmp = reader.readLine()) != null) {
+                log.info("line: {}", tmp);
+                if (tmp.endsWith(";")) {
+                    stringBuilder.append(tmp);
+                    sqlList.add(stringBuilder.toString());
+                    stringBuilder.delete(0, stringBuilder.length());
+                } else {
+                    stringBuilder.append(tmp);
+                }
+            }
+            if (!"".endsWith(stringBuilder.toString().trim())) {
+                sqlList.add(stringBuilder.toString());
+            }
+        }
+
+        return sqlList;
     }
 }
