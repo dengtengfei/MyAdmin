@@ -17,7 +17,7 @@ public interface CallBack {
 
     /**
      * 本次回调任务名称
-     * @return
+     * @return \
      */
     default String getCallBackName() {
         return Thread.currentThread().getId() + ":" + this.getClass().getName();

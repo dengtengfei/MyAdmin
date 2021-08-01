@@ -89,8 +89,8 @@ public interface RoleService {
 
     /**
      * 根据菜单 id 查找角色列表
-     * @param menuIds
-     * @return
+     * @param menuIds \
+     * @return \
      */
     List<Role> findInMenuId(List<Long> menuIds);
 
@@ -117,7 +117,7 @@ public interface RoleService {
 
     /**
      * 解除角色和菜单的关联
-      * @param id
+      * @param id \
      */
     void untiedMenu(Long id);
 }

@@ -17,8 +17,8 @@ public interface DictDetailRepository extends JpaRepository<DictDetail, Long>, J
 
     /**
      * 根据字典名称查询
-     * @param name
-     * @return
+     * @param name \
+     * @return \
      */
     List<DictDetail> findByDictName(String name);
 }

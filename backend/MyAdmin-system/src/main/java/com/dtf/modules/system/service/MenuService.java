@@ -92,7 +92,7 @@ public interface MenuService {
      *
      * @param menuDto \
      * @param menuList \
-     * @return
+     * @return \
      */
     List<MenuDto> getSuperior(MenuDto menuDto, List<Menu> menuList);
 

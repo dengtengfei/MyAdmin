@@ -1,10 +1,8 @@
 package com.dtf.modules.system.repository;
 
 import com.dtf.modules.system.domain.Role;
-import com.dtf.modules.system.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
@@ -19,7 +17,7 @@ import java.util.Set;
 public interface RoleRepository extends JpaRepository<Role, Long>, JpaSpecificationExecutor<Role> {
     /**
      * 根据 id 删除
-     * @param ids
+     * @param ids \
      */
     void deleteAllByIdIn(Set<Long> ids);
 
