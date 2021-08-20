@@ -3,13 +3,13 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>MyAdmin</artifactId>
+        <artifactId>my-admin-backend</artifactId>
         <groupId>com.dtf</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>MyAdmin-tools</artifactId>
+    <artifactId>my-admin-tools</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -23,7 +23,7 @@
         <!-- 同时需要common模块和logging模块只需要引入logging模块即可 -->
         <dependency>
             <groupId>com.dtf</groupId>
-            <artifactId>MyAdmin-logging</artifactId>
+            <artifactId>my-admin-logging</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
 

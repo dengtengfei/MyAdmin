@@ -2,10 +2,10 @@
 *.iml
 */*.iml
 /.gradle/
-backend/*/target
-backend/.idea
+my-admin-backend/*/target
+my-admin-backend/.idea
 
-front-end/node_modules/
-front-end/package-lock.json/
-front-end/.idea
-front-end/.vscode
+my-admin-front-end/node_modules/
+my-admin-front-end/package-lock.json/
+my-admin-front-end/.idea
+my-admin-front-end/.vscode

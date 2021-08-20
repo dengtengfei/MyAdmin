@@ -4,24 +4,23 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.dtf</groupId>
-    <artifactId>MyAdmin</artifactId>
+    <artifactId>my-admin-backend</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
     <modules>
-        <module>MyAdmin-common</module>
-        <module>MyAdmin-generator</module>
-        <module>MyAdmin-logging</module>
-        <module>MyAdmin-system</module>
-        <module>MyAdmin-tools</module>
+        <module>my-admin-common</module>
+        <module>my-admin-generator</module>
+        <module>my-admin-logging</module>
+        <module>my-admin-system</module>
+        <module>my-admin-tools</module>
     </modules>
 
     <name>MY-ADMIN 后台管理</name>
 
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.2.10.RELEASE</version>
+        <artifactId>my-admin</artifactId>
+        <groupId>com.dtf</groupId>
+        <version>1.0-SNAPSHOT</version>
     </parent>
 
     <properties>
