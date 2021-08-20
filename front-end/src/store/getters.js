@@ -22,3 +22,4 @@ const getters = {
   swaggerApi: state => state.api.swaggerApi,
   sidebarRouters: state => state.api.sidebarRouters
 }
+export default getters
