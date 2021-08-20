@@ -10,6 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>my-admin-common</artifactId>
+    <name>MY-ADMIN 公共模块</name>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
