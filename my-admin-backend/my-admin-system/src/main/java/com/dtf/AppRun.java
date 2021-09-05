@@ -1,5 +1,6 @@
 package com.dtf;
 
+import com.dtf.annotation.rest.AnonymousGetMapping;
 import com.dtf.utils.SpringContextHolder;
 import io.swagger.annotations.Api;
 import org.springframework.boot.SpringApplication;
@@ -46,8 +47,8 @@ public class AppRun {
      *
      * @return /
      */
-//    @AnonymousGetMapping("/")
-//    public String index() {
-//        return "Backend service started successfully";
-//    }
+    @AnonymousGetMapping("/")
+    public String index() {
+        return "Backend service started successfully";
+    }
 }
